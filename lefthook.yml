@@ -8,3 +8,6 @@ pre-commit:
     pinact:
       run: pinact run --check --verify
       glob: ".github/workflows/*.{yml,yaml}"
+    zizmor:
+      run: zizmor .github/workflows/
+      glob: ".github/workflows/*.{yml,yaml}"
