@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { serializeJson, importJson } from "$lib/state.svelte";
+	import { serializeJson, importJson, getActiveSetName } from "$lib/state.svelte";
 
 	let json = $derived(serializeJson());
 	let importText = $state("");
@@ -18,7 +18,7 @@
 		const url = URL.createObjectURL(blob);
 		const a = document.createElement("a");
 		a.href = url;
-		a.download = "tag-table.json";
+		a.download = `${getActiveSetName()}.json`;
 		a.click();
 		URL.revokeObjectURL(url);
 	}

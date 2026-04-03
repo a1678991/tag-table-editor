@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { table, getTotalTags } from "$lib/state.svelte";
+	import { getTable, getTotalTags } from "$lib/state.svelte";
 	import PreviewColumn from "./PreviewColumn.svelte";
 </script>
 
@@ -12,7 +12,7 @@
 	<div class="flex-1 overflow-auto p-4">
 		<div class="preview-stage">
 			<div class="preview-grid">
-				{#each table.columns as column, colIndex (column)}
+				{#each getTable().columns as column, colIndex (column)}
 					<PreviewColumn {column} {colIndex} />
 				{/each}
 			</div>

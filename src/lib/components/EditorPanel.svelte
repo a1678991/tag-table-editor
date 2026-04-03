@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { table, addColumn, updateGlobalWidth, moveColumn } from "$lib/state.svelte";
+	import { getTable, addColumn, updateGlobalWidth, moveColumn } from "$lib/state.svelte";
 	import ColumnEditor from "./ColumnEditor.svelte";
 
 	function handleColDragStart(colIndex: number, e: DragEvent) {
@@ -41,22 +41,22 @@
 				min="0.1"
 				max="2.0"
 				step="0.05"
-				value={table.column_width}
+				value={getTable().column_width}
 				oninput={(e) =>
 					updateGlobalWidth(parseFloat((e.target as HTMLInputElement).value))}
 			/>
 			<span class="text-xs font-mono opacity-50 w-8 text-right">
-				{table.column_width.toFixed(2)}
+				{getTable().column_width.toFixed(2)}
 			</span>
 		</div>
 	</div>
 
 	<div class="flex-1 overflow-auto p-3 space-y-3">
-		{#each table.columns as column, colIndex (column)}
+		{#each getTable().columns as column, colIndex (column)}
 			<ColumnEditor
 				{column}
 				{colIndex}
-				totalColumns={table.columns.length}
+				totalColumns={getTable().columns.length}
 				ondragstartcolumn={(e) => handleColDragStart(colIndex, e)}
 				ondragovercolumn={(e) => handleColDragOver(colIndex, e)}
 				ondropcolumn={(e) => handleColDrop(colIndex, e)}

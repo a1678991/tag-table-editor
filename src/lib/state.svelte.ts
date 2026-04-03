@@ -1,25 +1,90 @@
 import type { TagTable, ValidationError } from "./types";
 import { autoTextColor } from "./color-utils";
 import { validate } from "./validation";
-import { loadFromLocalStorage, saveToLocalStorage } from "./persistence";
+import { loadAllSets, saveAllSets, type StoredData } from "./persistence";
 import { TEMPLATES } from "./templates";
+import { generateName } from "./random-name";
 
-function defaultTable(): TagTable {
-  return structuredClone(TEMPLATES.softwareArchitecture.data);
+function defaultData(): StoredData {
+  const name = generateName();
+  return {
+    sets: { [name]: structuredClone(TEMPLATES.softwareArchitecture.data) },
+    activeSet: name,
+  };
 }
 
-function initTable(): TagTable {
-  return loadFromLocalStorage() ?? defaultTable();
+function initData(): StoredData {
+  return loadAllSets() ?? defaultData();
 }
 
-export const table: TagTable = $state(initTable());
+const data: StoredData = $state(initData());
+
+// --- Active set ---
+
+export function getActiveSetName(): string {
+  return data.activeSet;
+}
+
+export function getSetNames(): string[] {
+  return Object.keys(data.sets);
+}
+
+export function getTable(): TagTable {
+  return data.sets[data.activeSet];
+}
+
+export function switchSet(name: string): void {
+  if (name in data.sets) {
+    data.activeSet = name;
+  }
+}
+
+export function createSet(fromTemplate?: string): string {
+  const name = generateName();
+  if (fromTemplate && fromTemplate in TEMPLATES) {
+    data.sets[name] = structuredClone(TEMPLATES[fromTemplate].data);
+  } else {
+    data.sets[name] = structuredClone(TEMPLATES.blank.data);
+  }
+  data.activeSet = name;
+  return name;
+}
+
+export function deleteSet(name: string): void {
+  if (Object.keys(data.sets).length <= 1) return;
+  delete data.sets[name];
+  if (data.activeSet === name) {
+    data.activeSet = Object.keys(data.sets)[0];
+  }
+}
+
+export function renameSet(oldName: string, newName: string): boolean {
+  const trimmed = newName.trim();
+  if (!trimmed || trimmed === oldName) return false;
+  if (trimmed in data.sets) return false;
+  data.sets[trimmed] = data.sets[oldName];
+  delete data.sets[oldName];
+  if (data.activeSet === oldName) {
+    data.activeSet = trimmed;
+  }
+  return true;
+}
+
+export function duplicateSet(name: string): string {
+  const newName = generateName();
+  data.sets[newName] = structuredClone(data.sets[name]);
+  data.activeSet = newName;
+  return newName;
+}
+
+// --- Derived ---
 
 export function getTotalTags(): number {
-  return table.columns.reduce((s, c) => s + c.cells.length, 0);
+  return getTable().columns.reduce((s, c) => s + c.cells.length, 0);
 }
 
 export function getErrors(): ValidationError[] {
-  return validate(table);
+  return validate(getTable());
 }
 
 export function getHasErrors(): boolean {
@@ -27,9 +92,10 @@ export function getHasErrors(): boolean {
 }
 
 export function serializeJson(): string {
+  const t = getTable();
   const clean = {
-    column_width: table.column_width,
-    columns: table.columns.map((col) => {
+    column_width: t.column_width,
+    columns: t.columns.map((col) => {
       const out: Record<string, unknown> = {};
       if (col.width && col.width > 0) out.width = col.width;
       out.cells = col.cells;
@@ -39,50 +105,52 @@ export function serializeJson(): string {
   return JSON.stringify(clean, null, 2);
 }
 
+// --- Auto-save ---
+
 let saveTimeout: ReturnType<typeof setTimeout> | undefined;
 
 $effect.root(() => {
   $effect(() => {
-    const json = JSON.stringify(table);
+    const json = JSON.stringify(data);
     void json;
     clearTimeout(saveTimeout);
-    saveTimeout = setTimeout(() => saveToLocalStorage(table), 500);
+    saveTimeout = setTimeout(() => saveAllSets(data), 500);
   });
 });
 
 // --- Column mutations ---
 
 export function addColumn(): void {
-  table.columns.push({
+  getTable().columns.push({
     cells: [{ text: "", text_color: "#FFFFFF", bg_color: "#14505C" }],
   });
 }
 
 export function removeColumn(colIndex: number): void {
-  table.columns.splice(colIndex, 1);
+  getTable().columns.splice(colIndex, 1);
 }
 
 export function moveColumn(from: number, to: number): void {
   if (from === to) return;
   const [col] = table.columns.splice(from, 1);
-  table.columns.splice(to, 0, col);
+  getTable().columns.splice(to, 0, col);
 }
 
 export function updateColumnWidth(colIndex: number, width: number | undefined): void {
-  table.columns[colIndex].width = width;
+  getTable().columns[colIndex].width = width;
 }
 
 export function updateGlobalWidth(width: number): void {
-  table.column_width = width;
+  getTable().column_width = width;
 }
 
 // --- Cell mutations ---
 
 export function addCell(colIndex: number): void {
-  const cells = table.columns[colIndex].cells;
+  const cells = getTable().columns[colIndex].cells;
   const lastCell = cells[cells.length - 1];
   const bgColor = lastCell?.bg_color ?? "#14505C";
-  table.columns[colIndex].cells.push({
+  getTable().columns[colIndex].cells.push({
     text: "",
     text_color: autoTextColor(bgColor),
     bg_color: bgColor,
@@ -90,12 +158,12 @@ export function addCell(colIndex: number): void {
 }
 
 export function removeCell(colIndex: number, cellIndex: number): void {
-  table.columns[colIndex].cells.splice(cellIndex, 1);
+  getTable().columns[colIndex].cells.splice(cellIndex, 1);
 }
 
 export function moveCell(colIndex: number, from: number, to: number): void {
   if (from === to) return;
-  const cells = table.columns[colIndex].cells;
+  const cells = getTable().columns[colIndex].cells;
   const [cell] = cells.splice(from, 1);
   cells.splice(to, 0, cell);
 }
@@ -106,12 +174,12 @@ export function moveCellAcross(
   toCol: number,
   toCell: number,
 ): void {
-  const [cell] = table.columns[fromCol].cells.splice(fromCell, 1);
-  table.columns[toCol].cells.splice(toCell, 0, cell);
+  const [cell] = getTable().columns[fromCol].cells.splice(fromCell, 1);
+  getTable().columns[toCol].cells.splice(toCell, 0, cell);
 }
 
 export function updateCellText(colIndex: number, cellIndex: number, text: string): void {
-  table.columns[colIndex].cells[cellIndex].text = text;
+  getTable().columns[colIndex].cells[cellIndex].text = text;
 }
 
 export function updateCellBgColor(
@@ -120,14 +188,14 @@ export function updateCellBgColor(
   color: string,
   autoText: boolean = true,
 ): void {
-  table.columns[colIndex].cells[cellIndex].bg_color = color;
+  getTable().columns[colIndex].cells[cellIndex].bg_color = color;
   if (autoText) {
-    table.columns[colIndex].cells[cellIndex].text_color = autoTextColor(color);
+    getTable().columns[colIndex].cells[cellIndex].text_color = autoTextColor(color);
   }
 }
 
 export function updateCellTextColor(colIndex: number, cellIndex: number, color: string): void {
-  table.columns[colIndex].cells[cellIndex].text_color = color;
+  getTable().columns[colIndex].cells[cellIndex].text_color = color;
 }
 
 // --- Import / Export ---
@@ -141,8 +209,8 @@ export function importJson(jsonStr: string): {
     if (!parsed.columns || !Array.isArray(parsed.columns)) {
       return { ok: false, error: "columns フィールドが見つかりません" };
     }
-    table.column_width = parsed.column_width ?? 0.5;
-    table.columns = parsed.columns;
+    getTable().column_width = parsed.column_width ?? 0.5;
+    getTable().columns = parsed.columns;
     return { ok: true };
   } catch {
     return { ok: false, error: "JSONの形式が不正です" };
@@ -152,9 +220,9 @@ export function importJson(jsonStr: string): {
 export function loadTemplate(name: string): void {
   const tmpl = TEMPLATES[name];
   if (!tmpl) return;
-  const data = structuredClone(tmpl.data);
-  table.column_width = data.column_width;
-  table.columns = data.columns;
+  const cloned = structuredClone(tmpl.data);
+  getTable().column_width = cloned.column_width;
+  getTable().columns = cloned.columns;
 }
 
 export function resetTable(): void {

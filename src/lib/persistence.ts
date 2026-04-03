@@ -1,22 +1,45 @@
 import type { TagTable } from "./types";
 
-const STORAGE_KEY = "tag-table-editor-v1";
+const STORAGE_KEY = "tag-table-editor-v2";
 const RECENT_COLORS_KEY = "tag-editor-recent-colors";
 const MAX_RECENT = 5;
 
-export function saveToLocalStorage(table: TagTable): void {
+export interface StoredData {
+  sets: Record<string, TagTable>;
+  activeSet: string;
+}
+
+export function saveAllSets(data: StoredData): void {
   try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(table));
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
   } catch {
     /* quota exceeded */
   }
 }
 
-export function loadFromLocalStorage(): TagTable | null {
+export function loadAllSets(): StoredData | null {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
-    if (!raw) return null;
+    if (!raw) return migrateV1();
     return JSON.parse(raw);
+  } catch {
+    return null;
+  }
+}
+
+/** Migrate from v1 single-table format */
+function migrateV1(): StoredData | null {
+  try {
+    const raw = localStorage.getItem("tag-table-editor-v1");
+    if (!raw) return null;
+    const table: TagTable = JSON.parse(raw);
+    const data: StoredData = {
+      sets: { "migrated-table": table },
+      activeSet: "migrated-table",
+    };
+    saveAllSets(data);
+    localStorage.removeItem("tag-table-editor-v1");
+    return data;
   } catch {
     return null;
   }

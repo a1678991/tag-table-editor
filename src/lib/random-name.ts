@@ -1,0 +1,73 @@
+const adjectives = [
+  "bright",
+  "calm",
+  "dark",
+  "eager",
+  "fair",
+  "grand",
+  "happy",
+  "keen",
+  "lush",
+  "neat",
+  "pale",
+  "quiet",
+  "rapid",
+  "sharp",
+  "tiny",
+  "vast",
+  "warm",
+  "bold",
+  "cool",
+  "deep",
+  "fine",
+  "glad",
+  "kind",
+  "mild",
+  "pure",
+  "rich",
+  "safe",
+  "tall",
+  "wide",
+  "young",
+];
+
+const nouns = [
+  "arch",
+  "bell",
+  "cave",
+  "dawn",
+  "edge",
+  "fern",
+  "gate",
+  "hill",
+  "isle",
+  "jade",
+  "knot",
+  "lake",
+  "moon",
+  "nest",
+  "opal",
+  "pine",
+  "reed",
+  "star",
+  "tide",
+  "vine",
+  "wave",
+  "apex",
+  "beam",
+  "core",
+  "dusk",
+  "echo",
+  "flux",
+  "glow",
+  "haze",
+  "iris",
+];
+
+function pick<T>(arr: T[]): T {
+  return arr[Math.floor(Math.random() * arr.length)];
+}
+
+export function generateName(): string {
+  return `${pick(adjectives)}-${pick(adjectives)}-${pick(nouns)}`;
+}

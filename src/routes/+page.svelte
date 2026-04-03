@@ -3,12 +3,14 @@
 	import EditorPanel from "$lib/components/EditorPanel.svelte";
 	import JsonPanel from "$lib/components/JsonPanel.svelte";
 	import Navbar from "$lib/components/Navbar.svelte";
+	import SetSwitcher from "$lib/components/SetSwitcher.svelte";
 
 	let showEditor = $state(false);
 </script>
 
 <div class="flex flex-col h-screen">
 	<Navbar bind:showEditor />
+	<SetSwitcher />
 
 	<div class="flex-1 flex min-h-0">
 		{#if showEditor}
