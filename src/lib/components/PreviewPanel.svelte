@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { getTable, getTotalTags } from "$lib/state.svelte";
+	import { getTable, getTotalTags, addColumn } from "$lib/state.svelte";
 	import PreviewColumn from "./PreviewColumn.svelte";
 </script>
 
@@ -13,8 +13,16 @@
 		<div class="preview-stage">
 			<div class="preview-grid">
 				{#each getTable().columns as column, colIndex (column)}
-					<PreviewColumn {column} {colIndex} />
+					<PreviewColumn {column} {colIndex} totalColumns={getTable().columns.length} />
 				{/each}
+				<button
+					type="button"
+					class="add-col-btn"
+					onclick={addColumn}
+					title="カラムを追加"
+				>
+					+
+				</button>
 			</div>
 		</div>
 	</div>
@@ -34,5 +42,27 @@
 	.preview-grid {
 		display: flex;
 		gap: 6px;
+		align-items: flex-start;
+	}
+
+	.add-col-btn {
+		min-width: 28px;
+		padding: 8px 4px;
+		border-radius: 6px;
+		font-size: 16px;
+		font-weight: 500;
+		border: 1px dashed rgba(255, 255, 255, 0.15);
+		background: transparent;
+		color: rgba(255, 255, 255, 0.25);
+		cursor: pointer;
+		transition: all 0.15s;
+		align-self: stretch;
+		flex-shrink: 0;
+	}
+
+	.add-col-btn:hover {
+		border-color: rgba(255, 255, 255, 0.4);
+		color: rgba(255, 255, 255, 0.6);
+		background: rgba(255, 255, 255, 0.05);
 	}
 </style>

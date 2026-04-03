@@ -4,6 +4,7 @@
 		updateCellText,
 		updateCellBgColor,
 		updateCellTextColor,
+		removeCell,
 	} from "$lib/state.svelte";
 	import { autoTextColor } from "$lib/color-utils";
 	import ColorPicker from "./ColorPicker.svelte";
@@ -116,6 +117,13 @@
 					}}
 				/>
 			</div>
+			<button
+				type="button"
+				class="remove-cell-btn"
+				onclick={() => { removeCell(colIndex, cellIndex); showColorPicker = false; }}
+			>
+				このセルを削除
+			</button>
 		</div>
 	{/if}
 </div>
@@ -194,5 +202,24 @@
 		width: 40px;
 		padding-top: 4px;
 		flex-shrink: 0;
+	}
+
+	.remove-cell-btn {
+		width: 100%;
+		padding: 4px 8px;
+		margin-top: 2px;
+		border-radius: 4px;
+		font-size: 11px;
+		border: 1px solid rgba(220, 50, 50, 0.3);
+		background: transparent;
+		color: rgba(220, 100, 100, 0.8);
+		cursor: pointer;
+		transition: all 0.15s;
+	}
+
+	.remove-cell-btn:hover {
+		background: rgba(220, 50, 50, 0.15);
+		border-color: rgba(220, 50, 50, 0.5);
+		color: rgba(240, 120, 120, 1);
 	}
 </style>
