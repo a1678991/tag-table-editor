@@ -14,7 +14,7 @@
     "browser": true,
     "es2024": true
   },
-  "ignorePatterns": [".svelte-kit/**", "build/**"],
+  "ignorePatterns": [".svelte-kit/**", "build/**", "*.config.ts", "*.config.js"],
   "rules": {
     "no-unused-vars": "error",
     "eqeqeq": "error",
