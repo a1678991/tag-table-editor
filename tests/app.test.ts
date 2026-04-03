@@ -297,3 +297,75 @@ test.describe("Journey: Editor panel", () => {
     await expect(page.locator("#col-width")).toBeVisible();
   });
 });
+
+// ============================================================
+// Journey 8: Undo / Redo
+// ============================================================
+test.describe("Journey: Undo / Redo", () => {
+  test("undo reverts text edit", async ({ page }) => {
+    await page.goto("/");
+    const cell = page.locator(".preview-cell").first();
+    const originalText = (await cell.textContent())!.trim();
+
+    // Edit text
+    await cell.dblclick();
+    const input = page.locator(".preview-cell-input");
+    await input.fill("変更テスト");
+    await input.press("Enter");
+    await expect(page.locator(".preview-cell").first()).toContainText("変更テスト");
+
+    // Undo
+    await page.keyboard.press("Control+z");
+    await expect(page.locator(".preview-cell").first()).toContainText(originalText);
+  });
+
+  test("redo restores undone change", async ({ page }) => {
+    await page.goto("/");
+    const cell = page.locator(".preview-cell").first();
+
+    // Edit text
+    await cell.dblclick();
+    const input = page.locator(".preview-cell-input");
+    await input.fill("やり直しテスト");
+    await input.press("Enter");
+
+    // Undo then redo
+    await page.keyboard.press("Control+z");
+    await page.keyboard.press("Control+Shift+z");
+    await expect(page.locator(".preview-cell").first()).toContainText("やり直しテスト");
+  });
+
+  test("undo reverts cell deletion", async ({ page }) => {
+    await page.goto("/");
+    const initialCount = await page.locator(".preview-cell").count();
+
+    // Delete a cell via color picker
+    await page.locator(".preview-cell").first().click();
+    await page.getByText("このセルを削除").click();
+
+    const afterDelete = await page.locator(".preview-cell").count();
+    expect(afterDelete).toBe(initialCount - 1);
+
+    // Undo
+    await page.keyboard.press("Control+z");
+    const afterUndo = await page.locator(".preview-cell").count();
+    expect(afterUndo).toBe(initialCount);
+  });
+
+  test("undo button is disabled when no history", async ({ page }) => {
+    await page.goto("/");
+    const undoBtn = page.locator("button[title='元に戻す (Ctrl+Z)']");
+    await expect(undoBtn).toBeDisabled();
+  });
+
+  test("undo button becomes enabled after mutation", async ({ page }) => {
+    await page.goto("/");
+    const undoBtn = page.locator("button[title='元に戻す (Ctrl+Z)']");
+    await expect(undoBtn).toBeDisabled();
+
+    // Add a column to create history
+    await page.locator(".add-col-btn").click();
+    // Need to wait for reactivity
+    await expect(undoBtn).toBeEnabled();
+  });
+});

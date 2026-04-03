@@ -17,7 +17,7 @@
 				{/each}
 				<button
 					type="button"
-					class="min-w-7 px-1 py-2 rounded-md text-base font-medium border border-dashed border-white/15 bg-transparent text-white/25 cursor-pointer transition-all duration-150 self-stretch shrink-0 hover:border-white/40 hover:text-white/60 hover:bg-white/5"
+					class="add-col-btn min-w-7 px-1 py-2 rounded-md text-base font-medium border border-dashed border-white/15 bg-transparent text-white/25 cursor-pointer transition-all duration-150 self-stretch shrink-0 hover:border-white/40 hover:text-white/60 hover:bg-white/5"
 					onclick={addColumn}
 					title="カラムを追加"
 				>

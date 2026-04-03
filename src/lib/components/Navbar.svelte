@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { resetTable } from "$lib/state.svelte";
+	import { resetTable, undo, redo, canUndo, canRedo } from "$lib/state.svelte";
 	import ValidationBadge from "./ValidationBadge.svelte";
 	import TemplateModal from "./TemplateModal.svelte";
 
@@ -10,6 +10,26 @@
 	} = $props();
 
 	let templateOpen = $state(false);
+
+	function handleKeydown(e: KeyboardEvent) {
+		if ((e.ctrlKey || e.metaKey) && e.key === "z" && !e.shiftKey) {
+			e.preventDefault();
+			undo();
+		}
+		if ((e.ctrlKey || e.metaKey) && e.key === "z" && e.shiftKey) {
+			e.preventDefault();
+			redo();
+		}
+		if ((e.ctrlKey || e.metaKey) && e.key === "y") {
+			e.preventDefault();
+			redo();
+		}
+	}
+
+	$effect(() => {
+		document.addEventListener("keydown", handleKeydown);
+		return () => document.removeEventListener("keydown", handleKeydown);
+	});
 </script>
 
 <nav class="navbar bg-base-200 border-b border-base-content/10 px-4 min-h-0 h-12">
@@ -19,6 +39,26 @@
 	</div>
 
 	<div class="flex-none flex items-center gap-1">
+		<div class="flex items-center gap-0.5 mr-1">
+			<button
+				type="button"
+				class="btn btn-ghost btn-xs"
+				disabled={!canUndo()}
+				onclick={undo}
+				title="元に戻す (Ctrl+Z)"
+			>
+				↩
+			</button>
+			<button
+				type="button"
+				class="btn btn-ghost btn-xs"
+				disabled={!canRedo()}
+				onclick={redo}
+				title="やり直す (Ctrl+Shift+Z)"
+			>
+				↪
+			</button>
+		</div>
 		<button
 			type="button"
 			class="btn btn-ghost btn-xs"
