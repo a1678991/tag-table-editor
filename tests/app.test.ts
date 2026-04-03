@@ -282,9 +282,9 @@ test.describe("Journey: Editor panel", () => {
     await page.goto("/");
     await expect(page.locator("text=エディタ").first()).toBeVisible();
     // EditorPanel heading should not be visible
-    await expect(
-      page.locator("h2", { hasText: "エディタ" }).locator("visible=true"),
-    ).toHaveCount(0);
+    await expect(page.locator("h2", { hasText: "エディタ" }).locator("visible=true")).toHaveCount(
+      0,
+    );
   });
 
   test("clicking エディタ button shows editor panel", async ({ page }) => {

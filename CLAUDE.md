@@ -53,9 +53,7 @@ Single module-level `$state` object holds all data. No stores, no context API.
   "columns": [
     {
       "width": 0.7,
-      "cells": [
-        { "text": "...", "text_color": "#RRGGBB", "bg_color": "#RRGGBB" }
-      ]
+      "cells": [{ "text": "...", "text_color": "#RRGGBB", "bg_color": "#RRGGBB" }]
     }
   ]
 }
@@ -66,6 +64,7 @@ Single module-level `$state` object holds all data. No stores, no context API.
 ### Preview-First Editing
 
 The preview panel is the primary editing surface — no separate editor panel needed by default:
+
 - **Single-click** cell → color picker dropdown
 - **Double-click** cell → inline text editing
 - **Drag-and-drop** cells within and across columns
