@@ -191,10 +191,6 @@
 		opacity: 0.4;
 	}
 
-	.hex-input.invalid {
-		border-color: oklch(var(--er));
-	}
-
 	.picker-panel {
 		position: absolute;
 		top: 100%;

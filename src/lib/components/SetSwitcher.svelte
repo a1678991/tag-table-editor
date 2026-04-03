@@ -47,12 +47,14 @@
 					onkeydown={handleRenameKeydown}
 				/>
 			{:else}
-				<button
-					type="button"
+				<div
 					class="set-tab"
 					class:active
+					role="tab"
+					tabindex="0"
 					onclick={() => switchSet(name)}
 					ondblclick={() => handleStartRename(name)}
+					onkeydown={(e) => { if (e.key === "Enter") switchSet(name); }}
 					title="クリックで切替 / ダブルクリックでリネーム"
 				>
 					<span class="set-tab-name">{name}</span>
@@ -66,7 +68,7 @@
 							×
 						</button>
 					{/if}
-				</button>
+				</div>
 			{/if}
 		{/each}
 
