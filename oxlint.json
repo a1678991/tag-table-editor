@@ -1,4 +1,24 @@
 {
-  "$schema": "https://raw.githubusercontent.com/nicolo-ribaudo/oxlint-config-json-schema/refs/heads/main/schema.json",
-  "rules": {}
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "categories": {
+    "correctness": "error",
+    "suspicious": "warn",
+    "perf": "warn",
+    "style": "off",
+    "pedantic": "off",
+    "restriction": "off",
+    "nursery": "off"
+  },
+  "plugins": ["import", "typescript", "unicorn"],
+  "env": {
+    "browser": true,
+    "es2024": true
+  },
+  "ignorePatterns": [".svelte-kit/**", "build/**"],
+  "rules": {
+    "no-unused-vars": "error",
+    "eqeqeq": "error",
+    "import/no-cycle": "error",
+    "import/no-duplicates": "error"
+  }
 }
