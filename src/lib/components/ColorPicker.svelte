@@ -202,8 +202,8 @@
 		z-index: 50;
 		margin-top: 4px;
 		padding: 8px;
-		background: oklch(var(--b2));
-		border: 1px solid oklch(var(--bc) / 0.15);
+		background: #2a303c;
+		border: 1px solid rgba(255, 255, 255, 0.12);
 		border-radius: 8px;
 		box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
 		min-width: 200px;

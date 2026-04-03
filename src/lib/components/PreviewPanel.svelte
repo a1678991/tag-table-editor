@@ -12,8 +12,8 @@
 	<div class="flex-1 overflow-auto p-4">
 		<div class="preview-stage">
 			<div class="preview-grid">
-				{#each table.columns as column (column)}
-					<PreviewColumn {column} />
+				{#each table.columns as column, colIndex (column)}
+					<PreviewColumn {column} {colIndex} />
 				{/each}
 			</div>
 		</div>

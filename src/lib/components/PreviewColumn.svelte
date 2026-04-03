@@ -2,12 +2,18 @@
 	import type { Column } from "$lib/types";
 	import PreviewCell from "./PreviewCell.svelte";
 
-	let { column }: { column: Column } = $props();
+	let {
+		column,
+		colIndex,
+	}: {
+		column: Column;
+		colIndex: number;
+	} = $props();
 </script>
 
 <div class="preview-column">
-	{#each column.cells as cell (cell)}
-		<PreviewCell {cell} />
+	{#each column.cells as cell, cellIndex (cell)}
+		<PreviewCell {cell} {colIndex} {cellIndex} />
 	{/each}
 </div>
 
