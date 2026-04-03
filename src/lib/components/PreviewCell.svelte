@@ -13,10 +13,12 @@
 		cell,
 		colIndex,
 		cellIndex,
+		ondragstartcell,
 	}: {
 		cell: Cell;
 		colIndex: number;
 		cellIndex: number;
+		ondragstartcell?: (e: DragEvent) => void;
 	} = $props();
 
 	let editing = $state(false);
@@ -34,7 +36,6 @@
 		e.stopPropagation();
 		showColorPicker = false;
 		editing = true;
-		// Focus input after Svelte renders it
 		requestAnimationFrame(() => inputEl?.focus());
 	}
 
@@ -62,6 +63,21 @@
 		}
 	}
 
+	function handleDragStart(e: DragEvent) {
+		showColorPicker = false;
+		e.dataTransfer!.effectAllowed = "move";
+		e.dataTransfer!.setData(
+			"application/cell",
+			JSON.stringify({ colIndex, cellIndex }),
+		);
+		(e.currentTarget as HTMLElement).style.opacity = "0.4";
+		ondragstartcell?.(e);
+	}
+
+	function handleDragEnd(e: DragEvent) {
+		(e.currentTarget as HTMLElement).style.opacity = "1";
+	}
+
 	$effect(() => {
 		if (showColorPicker) {
 			document.addEventListener("mousedown", handleClickOutside);
@@ -71,7 +87,13 @@
 	});
 </script>
 
-<div class="preview-cell-wrapper" bind:this={cellEl}>
+<div
+	class="preview-cell-wrapper"
+	bind:this={cellEl}
+	draggable={!editing}
+	ondragstart={handleDragStart}
+	ondragend={handleDragEnd}
+>
 	{#if editing}
 		<input
 			bind:this={inputEl}
@@ -131,6 +153,11 @@
 <style>
 	.preview-cell-wrapper {
 		position: relative;
+		cursor: grab;
+	}
+
+	.preview-cell-wrapper:active {
+		cursor: grabbing;
 	}
 
 	.preview-cell {

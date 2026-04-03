@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { Column } from "$lib/types";
-	import { addCell, removeColumn } from "$lib/state.svelte";
+	import { addCell, removeColumn, moveCell, moveCellAcross } from "$lib/state.svelte";
 	import PreviewCell from "./PreviewCell.svelte";
 
 	let {
@@ -12,20 +12,86 @@
 		colIndex: number;
 		totalColumns: number;
 	} = $props();
+
+	let dropIndex: number | null = $state(null);
+
+	function handleDragOver(cellIndex: number, e: DragEvent) {
+		if (!e.dataTransfer!.types.includes("application/cell")) return;
+		e.preventDefault();
+		e.dataTransfer!.dropEffect = "move";
+
+		const rect = (e.currentTarget as HTMLElement).getBoundingClientRect();
+		const midY = rect.top + rect.height / 2;
+		dropIndex = e.clientY < midY ? cellIndex : cellIndex + 1;
+	}
+
+	function handleDragOverGap(insertAt: number, e: DragEvent) {
+		if (!e.dataTransfer!.types.includes("application/cell")) return;
+		e.preventDefault();
+		e.dataTransfer!.dropEffect = "move";
+		dropIndex = insertAt;
+	}
+
+	function handleDrop(e: DragEvent) {
+		e.preventDefault();
+		const raw = e.dataTransfer!.getData("application/cell");
+		if (!raw || dropIndex === null) return;
+
+		try {
+			const { colIndex: fromCol, cellIndex: fromCell } = JSON.parse(raw);
+			if (fromCol === colIndex) {
+				const adjustedTarget = fromCell < dropIndex ? dropIndex - 1 : dropIndex;
+				moveCell(colIndex, fromCell, adjustedTarget);
+			} else {
+				moveCellAcross(fromCol, fromCell, colIndex, dropIndex);
+			}
+		} catch {
+			/* invalid data */
+		}
+		dropIndex = null;
+	}
+
+	function handleDragLeave(e: DragEvent) {
+		const col = (e.currentTarget as HTMLElement);
+		if (!col.contains(e.relatedTarget as Node)) {
+			dropIndex = null;
+		}
+	}
 </script>
 
-<div class="preview-column">
+<!-- svelte-ignore a11y_no_static_element_interactions -->
+<div
+	class="preview-column"
+	ondrop={handleDrop}
+	ondragleave={handleDragLeave}
+>
 	{#each column.cells as cell, cellIndex (cell)}
-		<PreviewCell {cell} {colIndex} {cellIndex} />
+		{#if dropIndex === cellIndex}
+			<div class="drop-indicator"></div>
+		{/if}
+		<div
+			class="cell-drop-zone"
+			ondragover={(e) => handleDragOver(cellIndex, e)}
+		>
+			<PreviewCell {cell} {colIndex} {cellIndex} />
+		</div>
 	{/each}
-	<button
-		type="button"
-		class="add-row-btn"
-		onclick={() => addCell(colIndex)}
-		title="セルを追加"
+	{#if dropIndex === column.cells.length}
+		<div class="drop-indicator"></div>
+	{/if}
+	<div
+		class="add-row-zone"
+		ondragover={(e) => handleDragOverGap(column.cells.length, e)}
 	>
-		+
-	</button>
+		<button
+			type="button"
+			class="add-row-btn"
+			onclick={() => addCell(colIndex)}
+			title="セルを追加"
+		>
+			+
+		</button>
+	</div>
 	{#if totalColumns > 1}
 		<button
 			type="button"
@@ -48,7 +114,24 @@
 		position: relative;
 	}
 
+	.cell-drop-zone {
+		position: relative;
+	}
+
+	.add-row-zone {
+		position: relative;
+	}
+
+	.drop-indicator {
+		height: 2px;
+		background: oklch(var(--p));
+		border-radius: 1px;
+		margin: -1px 0;
+		box-shadow: 0 0 6px oklch(var(--p) / 0.5);
+	}
+
 	.add-row-btn {
+		width: 100%;
 		padding: 2px 8px;
 		border-radius: 4px;
 		font-size: 14px;

@@ -35,7 +35,7 @@ test.describe("Journey: First visit", () => {
 
   test("set tab is visible with a generated name", async ({ page }) => {
     await page.goto("/");
-    const tab = page.locator(".set-tab").first();
+    const tab = page.locator(".set-tab[role='tab']").first();
     await expect(tab).toBeVisible();
     const name = await tab.locator(".set-tab-name").textContent();
     expect(name).toBeTruthy();
@@ -131,13 +131,13 @@ test.describe("Journey: Change cell colors", () => {
 test.describe("Journey: Multiple tag sets", () => {
   test("create new blank set via + button", async ({ page }) => {
     await page.goto("/");
-    const initialTabs = await page.locator(".set-tab").count();
+    const initialTabs = await page.locator(".set-tab[role='tab']").count();
 
     // Open + dropdown and click blank set
     await page.locator(".add-tab").click();
     await page.getByText("空のセット").click();
 
-    const newTabs = await page.locator(".set-tab").count();
+    const newTabs = await page.locator(".set-tab[role='tab']").count();
     expect(newTabs).toBe(initialTabs + 1);
   });
 
@@ -152,7 +152,7 @@ test.describe("Journey: Multiple tag sets", () => {
     const blankCells = await page.locator(".preview-cell").count();
 
     // Switch back to first tab
-    await page.locator(".set-tab").first().click();
+    await page.locator(".set-tab[role='tab']").first().click();
     const originalCells = await page.locator(".preview-cell").count();
 
     expect(originalCells).toBeGreaterThan(blankCells);
@@ -160,7 +160,7 @@ test.describe("Journey: Multiple tag sets", () => {
 
   test("double-click tab enables rename", async ({ page }) => {
     await page.goto("/");
-    const tab = page.locator(".set-tab").first();
+    const tab = page.locator(".set-tab[role='tab']").first();
     await tab.dblclick();
 
     const renameInput = page.locator(".rename-input");
@@ -173,11 +173,11 @@ test.describe("Journey: Multiple tag sets", () => {
     // Create a second set first
     await page.locator(".add-tab").click();
     await page.getByText("空のセット").click();
-    const tabsAfterCreate = await page.locator(".set-tab").count();
+    const tabsAfterCreate = await page.locator(".set-tab[role='tab']").count();
 
     // Delete the active set
     await page.locator(".set-tab-close").last().click();
-    const tabsAfterDelete = await page.locator(".set-tab").count();
+    const tabsAfterDelete = await page.locator(".set-tab[role='tab']").count();
     expect(tabsAfterDelete).toBe(tabsAfterCreate - 1);
   });
 });
