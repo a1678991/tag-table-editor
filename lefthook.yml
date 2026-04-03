@@ -6,8 +6,8 @@ pre-commit:
     fmt:
       run: bun run fmt:check
     pinact:
-      run: pinact run --check --verify
+      run: bun run pinact
       glob: ".github/workflows/*.{yml,yaml}"
     zizmor:
-      run: zizmor .github/workflows/
+      run: bun run zizmor
       glob: ".github/workflows/*.{yml,yaml}"
