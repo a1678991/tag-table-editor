@@ -39,6 +39,15 @@
 	</div>
 
 	<div class="flex-none flex items-center gap-1">
+		<a
+			href="https://github.com/a1678991/tag-table-editor"
+			target="_blank"
+			rel="noopener noreferrer"
+			class="btn btn-ghost btn-xs mr-1"
+			title="GitHub - Contributions welcome!"
+		>
+			<img src="https://cdn.simpleicons.org/github/white" alt="GitHub" class="w-4 h-4" />
+		</a>
 		<div class="flex items-center gap-0.5 mr-1">
 			<button
 				type="button"
