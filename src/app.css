@@ -1,0 +1,14 @@
+@import "tailwindcss";
+@plugin "daisyui" {
+  themes: dim --default;
+}
+
+@theme {
+  --font-sans: "Zen Kaku Gothic New", "Hiragino Kaku Gothic ProN", sans-serif;
+}
+
+html,
+body {
+  height: 100%;
+  overflow: hidden;
+}
