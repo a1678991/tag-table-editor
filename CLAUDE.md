@@ -75,6 +75,13 @@ The preview panel is the primary editing surface — no separate editor panel ne
 
 `paths.base` reads from `BASE_PATH` env var (set in CI to `/${{ github.event.repository.name }}`). Empty in dev mode via `process.argv.includes("dev")` check. Fallback is `404.html` (not `index.html`) to avoid conflict with prerendered homepage.
 
+## Testing Requirements
+
+- **New features must have Playwright tests** before the feature is considered complete. Add tests to the relevant journey section in `tests/app.test.ts`, or create a new journey section.
+- **Large-scope edits** (refactors, CSS migrations, state architecture changes) must pass all existing tests (`bun run test`) before committing.
+- Tests are organized by user journey (first visit, edit text, change colors, multiple sets, export, persistence, editor panel, undo/redo). Follow this pattern.
+- Each test clears localStorage in `beforeEach` for isolation.
+
 ## Svelte 5 Gotchas
 
 - **oxlint/oxfmt cannot parse `.svelte` files** — ESLint with `eslint-plugin-svelte` covers Svelte-specific linting
