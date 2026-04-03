@@ -41,12 +41,13 @@ export function serializeJson(): string {
 
 let saveTimeout: ReturnType<typeof setTimeout> | undefined;
 
-$effect(() => {
-  // Access table deeply to track all changes
-  const json = JSON.stringify(table);
-  void json;
-  clearTimeout(saveTimeout);
-  saveTimeout = setTimeout(() => saveToLocalStorage(table), 500);
+$effect.root(() => {
+  $effect(() => {
+    const json = JSON.stringify(table);
+    void json;
+    clearTimeout(saveTimeout);
+    saveTimeout = setTimeout(() => saveToLocalStorage(table), 500);
+  });
 });
 
 // --- Column mutations ---
