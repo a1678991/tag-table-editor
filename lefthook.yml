@@ -5,3 +5,6 @@ pre-commit:
       run: bun run lint
     fmt:
       run: bun run fmt:check
+    pinact:
+      run: pinact run --check --verify
+      glob: ".github/workflows/*.{yml,yaml}"

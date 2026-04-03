@@ -12,6 +12,8 @@
     "fmt": "oxfmt --write .",
     "fmt:check": "oxfmt --check .",
     "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
+    "pinact": "pinact run --check --verify",
+    "pinact:update": "pinact run -u --min-age 7",
     "test": "playwright test",
     "test:ui": "playwright test --ui"
   },
