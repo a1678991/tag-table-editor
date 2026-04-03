@@ -58,7 +58,7 @@
 </script>
 
 <div
-	class="column-editor"
+	class="bg-base-100 border border-base-content/10 rounded-lg p-2"
 	draggable="true"
 	role="list"
 	ondragstart={ondragstartcolumn}
@@ -66,9 +66,9 @@
 	ondrop={ondropcolumn}
 	ondragend={ondragendcolumn}
 >
-	<div class="column-header">
+	<div class="flex items-center justify-between pb-1.5 mb-1.5 border-b border-base-content/8">
 		<div class="flex items-center gap-2">
-			<span class="drag-handle" title="ドラッグして並べ替え">⠿</span>
+			<span class="cursor-grab opacity-30 text-sm select-none hover:opacity-70" title="ドラッグして並べ替え">⠿</span>
 			<span class="text-xs font-bold opacity-60">
 				カラム {colIndex + 1}
 			</span>
@@ -86,7 +86,7 @@
 		{/if}
 	</div>
 
-	<div class="cell-list">
+	<div class="flex flex-col gap-1">
 		{#each column.cells as cell, cellIndex (cell)}
 			<CellEditor
 				{cell}
@@ -109,37 +109,3 @@
 	</button>
 </div>
 
-<style>
-	.column-editor {
-		background: oklch(var(--b1));
-		border: 1px solid oklch(var(--bc) / 0.1);
-		border-radius: 8px;
-		padding: 8px;
-	}
-
-	.column-header {
-		display: flex;
-		align-items: center;
-		justify-content: space-between;
-		padding-bottom: 6px;
-		margin-bottom: 6px;
-		border-bottom: 1px solid oklch(var(--bc) / 0.08);
-	}
-
-	.drag-handle {
-		cursor: grab;
-		opacity: 0.3;
-		font-size: 14px;
-		user-select: none;
-	}
-
-	.drag-handle:hover {
-		opacity: 0.7;
-	}
-
-	.cell-list {
-		display: flex;
-		flex-direction: column;
-		gap: 4px;
-	}
-</style>

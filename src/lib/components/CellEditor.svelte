@@ -31,7 +31,7 @@
 </script>
 
 <div
-	class="cell-editor"
+	class="flex items-start gap-1 p-1.5 rounded-md bg-base-200 border border-base-content/8 transition-[border-color] duration-150 hover:border-base-content/20"
 	draggable="true"
 	role="listitem"
 	{ondragstart}
@@ -39,9 +39,9 @@
 	{ondrop}
 	{ondragend}
 >
-	<div class="drag-handle" title="ドラッグして並べ替え">⠿</div>
+	<div class="cursor-grab opacity-30 text-sm leading-none p-0.5 select-none shrink-0 hover:opacity-70" title="ドラッグして並べ替え">⠿</div>
 
-	<div class="cell-fields">
+	<div class="flex-1 flex flex-col gap-1 min-w-0">
 		<input
 			type="text"
 			class="input input-xs input-bordered w-full text-xs"
@@ -86,41 +86,3 @@
 	</button>
 </div>
 
-<style>
-	.cell-editor {
-		display: flex;
-		align-items: flex-start;
-		gap: 4px;
-		padding: 6px;
-		border-radius: 6px;
-		background: oklch(var(--b2));
-		border: 1px solid oklch(var(--bc) / 0.08);
-		transition: border-color 0.15s;
-	}
-
-	.cell-editor:hover {
-		border-color: oklch(var(--bc) / 0.2);
-	}
-
-	.drag-handle {
-		cursor: grab;
-		opacity: 0.3;
-		font-size: 14px;
-		line-height: 1;
-		padding: 2px;
-		user-select: none;
-		flex-shrink: 0;
-	}
-
-	.drag-handle:hover {
-		opacity: 0.7;
-	}
-
-	.cell-fields {
-		flex: 1;
-		display: flex;
-		flex-direction: column;
-		gap: 4px;
-		min-width: 0;
-	}
-</style>

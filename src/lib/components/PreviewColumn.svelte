@@ -52,7 +52,7 @@
 	}
 
 	function handleDragLeave(e: DragEvent) {
-		const col = (e.currentTarget as HTMLElement);
+		const col = e.currentTarget as HTMLElement;
 		if (!col.contains(e.relatedTarget as Node)) {
 			dropIndex = null;
 		}
@@ -61,31 +61,31 @@
 
 <!-- svelte-ignore a11y_no_static_element_interactions -->
 <div
-	class="preview-column"
+	class="group relative flex flex-col gap-[3px] flex-1 min-w-0"
 	ondrop={handleDrop}
 	ondragleave={handleDragLeave}
 >
 	{#each column.cells as cell, cellIndex (cell)}
 		{#if dropIndex === cellIndex}
-			<div class="drop-indicator"></div>
+			<div class="h-0.5 bg-primary rounded-sm -my-px shadow-[0_0_6px_oklch(var(--p)/0.5)]"></div>
 		{/if}
 		<div
-			class="cell-drop-zone"
+			class="relative"
 			ondragover={(e) => handleDragOver(cellIndex, e)}
 		>
 			<PreviewCell {cell} {colIndex} {cellIndex} />
 		</div>
 	{/each}
 	{#if dropIndex === column.cells.length}
-		<div class="drop-indicator"></div>
+		<div class="h-0.5 bg-primary rounded-sm -my-px shadow-[0_0_6px_oklch(var(--p)/0.5)]"></div>
 	{/if}
 	<div
-		class="add-row-zone"
+		class="relative"
 		ondragover={(e) => handleDragOverGap(column.cells.length, e)}
 	>
 		<button
 			type="button"
-			class="add-row-btn"
+			class="w-full px-2 py-0.5 rounded text-sm font-medium text-center leading-tight min-h-5 border border-dashed border-white/15 bg-transparent text-white/25 cursor-pointer transition-all duration-150 hover:border-white/40 hover:text-white/60 hover:bg-white/5"
 			onclick={() => addCell(colIndex)}
 			title="セルを追加"
 		>
@@ -95,7 +95,7 @@
 	{#if totalColumns > 1}
 		<button
 			type="button"
-			class="remove-col-btn"
+			class="absolute -top-2 -right-1 w-4 h-4 rounded-full text-[10px] leading-none flex items-center justify-center border-none bg-red-700/70 text-white cursor-pointer opacity-0 group-hover:opacity-100 transition-opacity duration-150 hover:bg-red-600/90"
 			onclick={() => removeColumn(colIndex)}
 			title="カラムを削除"
 		>
@@ -103,80 +103,3 @@
 		</button>
 	{/if}
 </div>
-
-<style>
-	.preview-column {
-		display: flex;
-		flex-direction: column;
-		gap: 3px;
-		flex: 1;
-		min-width: 0;
-		position: relative;
-	}
-
-	.cell-drop-zone {
-		position: relative;
-	}
-
-	.add-row-zone {
-		position: relative;
-	}
-
-	.drop-indicator {
-		height: 2px;
-		background: oklch(var(--p));
-		border-radius: 1px;
-		margin: -1px 0;
-		box-shadow: 0 0 6px oklch(var(--p) / 0.5);
-	}
-
-	.add-row-btn {
-		width: 100%;
-		padding: 2px 8px;
-		border-radius: 4px;
-		font-size: 14px;
-		font-weight: 500;
-		text-align: center;
-		line-height: 1.3;
-		min-height: 20px;
-		border: 1px dashed rgba(255, 255, 255, 0.15);
-		background: transparent;
-		color: rgba(255, 255, 255, 0.25);
-		cursor: pointer;
-		transition: all 0.15s;
-	}
-
-	.add-row-btn:hover {
-		border-color: rgba(255, 255, 255, 0.4);
-		color: rgba(255, 255, 255, 0.6);
-		background: rgba(255, 255, 255, 0.05);
-	}
-
-	.remove-col-btn {
-		position: absolute;
-		top: -8px;
-		right: -4px;
-		width: 16px;
-		height: 16px;
-		border-radius: 50%;
-		font-size: 10px;
-		line-height: 1;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		border: none;
-		background: rgba(180, 40, 40, 0.7);
-		color: white;
-		cursor: pointer;
-		opacity: 0;
-		transition: opacity 0.15s;
-	}
-
-	.preview-column:hover .remove-col-btn {
-		opacity: 1;
-	}
-
-	.remove-col-btn:hover {
-		background: rgba(220, 40, 40, 0.9);
-	}
-</style>

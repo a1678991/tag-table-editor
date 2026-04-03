@@ -88,7 +88,7 @@
 </script>
 
 <div
-	class="preview-cell-wrapper"
+	class="relative cursor-grab active:cursor-grabbing"
 	bind:this={cellEl}
 	draggable={!editing}
 	ondragstart={handleDragStart}
@@ -98,7 +98,7 @@
 		<input
 			bind:this={inputEl}
 			type="text"
-			class="preview-cell-input"
+			class="preview-cell-input w-full px-2 py-1 rounded text-[11px] font-medium text-center leading-tight min-h-5 border-none outline-2 outline-primary"
 			style:background-color={cell.bg_color}
 			style:color={cell.text_color}
 			value={cell.text}
@@ -110,8 +110,8 @@
 	{:else}
 		<!-- svelte-ignore a11y_no_static_element_interactions -->
 		<div
-			class="preview-cell"
-			class:active={showColorPicker}
+			class="preview-cell px-2 py-1 rounded text-[11px] font-medium text-center whitespace-nowrap overflow-hidden text-ellipsis leading-tight min-h-5 flex items-center justify-center cursor-pointer transition-[outline] duration-100 outline-2 outline-transparent hover:outline-base-content/30"
+			class:outline-primary={showColorPicker}
 			style:background-color={cell.bg_color}
 			style:color={cell.text_color}
 			onclick={handleClick}
@@ -122,13 +122,13 @@
 	{/if}
 
 	{#if showColorPicker}
-		<div class="picker-dropdown">
-			<div class="picker-row">
-				<span class="picker-label">背景</span>
+		<div class="picker-dropdown absolute top-full left-0 z-50 mt-1 p-2 bg-[#2a303c] border border-white/12 rounded-lg shadow-[0_8px_24px_rgba(0,0,0,0.6)] min-w-[220px] flex flex-col gap-1.5">
+			<div class="flex items-start gap-1.5">
+				<span class="picker-label text-[11px] opacity-60 w-10 pt-1 shrink-0">背景</span>
 				<ColorPicker value={cell.bg_color} onchange={handleBgChange} />
 			</div>
-			<div class="picker-row">
-				<span class="picker-label">文字</span>
+			<div class="flex items-start gap-1.5">
+				<span class="picker-label text-[11px] opacity-60 w-10 pt-1 shrink-0">文字</span>
 				<ColorPicker
 					value={cell.text_color}
 					onchange={handleTextColorChange}
@@ -141,7 +141,7 @@
 			</div>
 			<button
 				type="button"
-				class="remove-cell-btn"
+				class="w-full px-2 py-1 mt-0.5 rounded text-[11px] border border-red-500/30 bg-transparent text-red-400/80 cursor-pointer transition-all duration-150 hover:bg-red-500/15 hover:border-red-500/50 hover:text-red-400"
 				onclick={() => { removeCell(colIndex, cellIndex); showColorPicker = false; }}
 			>
 				このセルを削除
@@ -151,102 +151,7 @@
 </div>
 
 <style>
-	.preview-cell-wrapper {
-		position: relative;
-		cursor: grab;
-	}
-
-	.preview-cell-wrapper:active {
-		cursor: grabbing;
-	}
-
-	.preview-cell {
-		padding: 4px 8px;
-		border-radius: 4px;
-		font-size: 11px;
-		font-weight: 500;
-		text-align: center;
-		white-space: nowrap;
-		overflow: hidden;
-		text-overflow: ellipsis;
-		line-height: 1.3;
-		min-height: 20px;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		cursor: pointer;
-		transition: outline 0.1s;
-		outline: 2px solid transparent;
-	}
-
-	.preview-cell:hover {
-		outline: 2px solid oklch(var(--bc) / 0.3);
-	}
-
-	.preview-cell.active {
-		outline: 2px solid oklch(var(--p));
-	}
-
-	.preview-cell-input {
-		width: 100%;
-		padding: 4px 8px;
-		border-radius: 4px;
-		font-size: 11px;
-		font-weight: 500;
-		text-align: center;
-		line-height: 1.3;
-		min-height: 20px;
-		border: none;
-		outline: 2px solid oklch(var(--p));
-	}
-
-	.picker-dropdown {
-		position: absolute;
-		top: 100%;
-		left: 0;
-		z-index: 50;
-		margin-top: 4px;
-		padding: 8px;
-		background: #2a303c;
-		border: 1px solid rgba(255, 255, 255, 0.12);
-		border-radius: 8px;
-		box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
-		min-width: 220px;
-		display: flex;
-		flex-direction: column;
-		gap: 6px;
-	}
-
-	.picker-row {
-		display: flex;
-		align-items: flex-start;
-		gap: 6px;
-	}
-
-	.picker-label {
-		font-size: 11px;
-		opacity: 0.6;
-		width: 40px;
-		padding-top: 4px;
-		flex-shrink: 0;
-	}
-
-	.remove-cell-btn {
-		width: 100%;
-		padding: 4px 8px;
-		margin-top: 2px;
-		border-radius: 4px;
-		font-size: 11px;
-		border: 1px solid rgba(220, 50, 50, 0.3);
-		background: transparent;
-		color: rgba(220, 100, 100, 0.8);
-		cursor: pointer;
-		transition: all 0.15s;
-	}
-
-	.remove-cell-btn:hover {
-		background: rgba(220, 50, 50, 0.15);
-		border-color: rgba(220, 50, 50, 0.5);
-		color: rgba(240, 120, 120, 1);
+	.preview-cell.outline-primary {
+		outline-color: oklch(var(--p));
 	}
 </style>

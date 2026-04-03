@@ -1,5 +1,11 @@
 import { test, expect } from "@playwright/test";
 
+// Clear localStorage before each test for isolation
+test.beforeEach(async ({ page }) => {
+  await page.goto("/");
+  await page.evaluate(() => localStorage.clear());
+});
+
 // ============================================================
 // User Journey 1: First visit — load template and explore
 // ============================================================

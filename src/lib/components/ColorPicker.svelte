@@ -72,7 +72,7 @@
 	});
 </script>
 
-<div class="color-picker" bind:this={pickerEl}>
+<div class="relative" bind:this={pickerEl}>
 	<div class="flex items-center gap-1.5">
 		{#if label}
 			<span class="text-[10px] opacity-50 w-7 shrink-0">{label}</span>
@@ -80,7 +80,7 @@
 
 		<button
 			type="button"
-			class="swatch"
+			class="swatch w-5 h-5 rounded border-2 border-base-content/20 cursor-pointer shrink-0 transition-[border-color] duration-150 hover:not-disabled:border-base-content/50 disabled:opacity-40 disabled:cursor-not-allowed"
 			style:background-color={value}
 			onclick={toggleExpanded}
 			disabled={isAuto}
@@ -89,7 +89,7 @@
 
 		<input
 			type="text"
-			class="hex-input"
+			class="w-18 text-[11px] font-mono px-1 py-0.5 rounded border border-base-content/15 bg-base-200 text-base-content disabled:opacity-40"
 			value={value}
 			onblur={handleInputBlur}
 			onkeydown={handleInputKeydown}
@@ -111,20 +111,20 @@
 	</div>
 
 	{#if expanded && !isAuto}
-		<div class="picker-panel">
+		<div class="absolute top-full left-0 z-50 mt-1 p-2 bg-[#2a303c] border border-white/12 rounded-lg shadow-[0_8px_24px_rgba(0,0,0,0.4)] min-w-[200px]">
 			<input
 				type="color"
-				class="native-picker"
+				class="native-picker w-full h-9 border-none rounded cursor-pointer bg-transparent p-0"
 				value={value}
 				oninput={handleNativeChange}
 			/>
 
-			<div class="section-label">プリセット</div>
-			<div class="swatch-grid">
+			<div class="text-[10px] opacity-40 mt-1.5 mb-1">プリセット</div>
+			<div class="flex flex-wrap gap-[3px]">
 				{#each PRESET_COLORS as color (color)}
 					<button
 						type="button"
-						class="preset-swatch"
+						class="preset-swatch w-[18px] h-[18px] rounded-sm border-[1.5px] border-base-content/15 cursor-pointer transition-transform duration-100 hover:scale-120"
 						class:active={value === color}
 						style:background-color={color}
 						onclick={() => applyColor(color)}
@@ -134,12 +134,12 @@
 			</div>
 
 			{#if recentColors.length > 0}
-				<div class="section-label">最近使った色</div>
-				<div class="swatch-grid">
+				<div class="text-[10px] opacity-40 mt-1.5 mb-1">最近使った色</div>
+				<div class="flex flex-wrap gap-[3px]">
 					{#each recentColors as color (color)}
 						<button
 							type="button"
-							class="preset-swatch"
+							class="preset-swatch w-[18px] h-[18px] rounded-sm border-[1.5px] border-base-content/15 cursor-pointer transition-transform duration-100 hover:scale-120"
 							class:active={value === color}
 							style:background-color={color}
 							onclick={() => applyColor(color)}
@@ -153,68 +153,6 @@
 </div>
 
 <style>
-	.color-picker {
-		position: relative;
-	}
-
-	.swatch {
-		width: 20px;
-		height: 20px;
-		border-radius: 4px;
-		border: 2px solid oklch(var(--bc) / 0.2);
-		cursor: pointer;
-		flex-shrink: 0;
-		transition: border-color 0.15s;
-	}
-
-	.swatch:hover:not(:disabled) {
-		border-color: oklch(var(--bc) / 0.5);
-	}
-
-	.swatch:disabled {
-		opacity: 0.4;
-		cursor: not-allowed;
-	}
-
-	.hex-input {
-		width: 72px;
-		font-size: 11px;
-		font-family: monospace;
-		padding: 2px 4px;
-		border-radius: 4px;
-		border: 1px solid oklch(var(--bc) / 0.15);
-		background: oklch(var(--b2));
-		color: oklch(var(--bc));
-	}
-
-	.hex-input:disabled {
-		opacity: 0.4;
-	}
-
-	.picker-panel {
-		position: absolute;
-		top: 100%;
-		left: 0;
-		z-index: 50;
-		margin-top: 4px;
-		padding: 8px;
-		background: #2a303c;
-		border: 1px solid rgba(255, 255, 255, 0.12);
-		border-radius: 8px;
-		box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
-		min-width: 200px;
-	}
-
-	.native-picker {
-		width: 100%;
-		height: 36px;
-		border: none;
-		border-radius: 4px;
-		cursor: pointer;
-		background: none;
-		padding: 0;
-	}
-
 	.native-picker::-webkit-color-swatch-wrapper {
 		padding: 0;
 	}
@@ -222,32 +160,6 @@
 	.native-picker::-webkit-color-swatch {
 		border: 1px solid oklch(var(--bc) / 0.15);
 		border-radius: 4px;
-	}
-
-	.section-label {
-		font-size: 10px;
-		opacity: 0.4;
-		margin-top: 6px;
-		margin-bottom: 3px;
-	}
-
-	.swatch-grid {
-		display: flex;
-		flex-wrap: wrap;
-		gap: 3px;
-	}
-
-	.preset-swatch {
-		width: 18px;
-		height: 18px;
-		border-radius: 3px;
-		border: 1.5px solid oklch(var(--bc) / 0.15);
-		cursor: pointer;
-		transition: transform 0.1s;
-	}
-
-	.preset-swatch:hover {
-		transform: scale(1.2);
 	}
 
 	.preset-swatch.active {
