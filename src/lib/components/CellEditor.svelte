@@ -27,7 +27,6 @@
 		ondragend?: (e: DragEvent) => void;
 	} = $props();
 
-	// eslint-disable-next-line -- intentional initial-value capture
 	let textAutoMode = $state(cell.text_color === autoTextColor(cell.bg_color));
 </script>
 

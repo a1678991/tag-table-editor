@@ -2,10 +2,7 @@
 	import { table, addColumn, updateGlobalWidth, moveColumn } from "$lib/state.svelte";
 	import ColumnEditor from "./ColumnEditor.svelte";
 
-	let dragColIndex: number | null = $state(null);
-
 	function handleColDragStart(colIndex: number, e: DragEvent) {
-		dragColIndex = colIndex;
 		e.dataTransfer!.effectAllowed = "move";
 		e.dataTransfer!.setData("application/column", String(colIndex));
 		(e.currentTarget as HTMLElement).style.opacity = "0.4";
@@ -29,7 +26,6 @@
 
 	function handleColDragEnd(e: DragEvent) {
 		(e.currentTarget as HTMLElement).style.opacity = "1";
-		dragColIndex = null;
 	}
 </script>
 

@@ -28,7 +28,7 @@
 		</p>
 
 		<div class="space-y-2">
-			{#each Object.entries(TEMPLATES) as [key, tmpl]}
+			{#each Object.entries(TEMPLATES) as [key, tmpl] (key)}
 				<button
 					type="button"
 					class="btn btn-outline btn-block justify-start"

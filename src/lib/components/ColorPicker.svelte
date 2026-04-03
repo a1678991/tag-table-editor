@@ -19,14 +19,9 @@
 	} = $props();
 
 	let expanded = $state(false);
-	let inputValue = $state("");
 	let pickerEl: HTMLDivElement | undefined = $state();
 
 	let recentColors = $state<string[]>([]);
-
-	$effect(() => {
-		inputValue = value;
-	});
 
 	function applyColor(color: string) {
 		if (!isValidColor(color)) return;
@@ -35,11 +30,12 @@
 		onchange(color);
 	}
 
-	function handleInputBlur() {
-		if (isValidColor(inputValue)) {
-			applyColor(inputValue.toUpperCase());
+	function handleInputBlur(e: FocusEvent) {
+		const input = e.target as HTMLInputElement;
+		if (isValidColor(input.value)) {
+			applyColor(input.value.toUpperCase());
 		} else {
-			inputValue = value;
+			input.value = value;
 		}
 	}
 
@@ -94,8 +90,7 @@
 		<input
 			type="text"
 			class="hex-input"
-			class:invalid={!isValidColor(inputValue)}
-			bind:value={inputValue}
+			value={value}
 			onblur={handleInputBlur}
 			onkeydown={handleInputKeydown}
 			disabled={isAuto}
@@ -126,7 +121,7 @@
 
 			<div class="section-label">プリセット</div>
 			<div class="swatch-grid">
-				{#each PRESET_COLORS as color}
+				{#each PRESET_COLORS as color (color)}
 					<button
 						type="button"
 						class="preset-swatch"
@@ -141,7 +136,7 @@
 			{#if recentColors.length > 0}
 				<div class="section-label">最近使った色</div>
 				<div class="swatch-grid">
-					{#each recentColors as color}
+					{#each recentColors as color (color)}
 						<button
 							type="button"
 							class="preset-swatch"

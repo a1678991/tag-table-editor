@@ -21,10 +21,7 @@
 		ondragendcolumn?: (e: DragEvent) => void;
 	} = $props();
 
-	let dragCellIndex: number | null = $state(null);
-
 	function handleCellDragStart(cellIndex: number, e: DragEvent) {
-		dragCellIndex = cellIndex;
 		e.dataTransfer!.effectAllowed = "move";
 		e.dataTransfer!.setData(
 			"text/plain",
@@ -57,7 +54,6 @@
 
 	function handleCellDragEnd(e: DragEvent) {
 		(e.target as HTMLElement).style.opacity = "1";
-		dragCellIndex = null;
 	}
 </script>
 

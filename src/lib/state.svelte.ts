@@ -12,7 +12,7 @@ function initTable(): TagTable {
   return loadFromLocalStorage() ?? defaultTable();
 }
 
-export let table: TagTable = $state(initTable());
+export const table: TagTable = $state(initTable());
 
 export function getTotalTags(): number {
   return table.columns.reduce((s, c) => s + c.cells.length, 0);
