@@ -139,9 +139,8 @@ test.describe("Journey: Multiple tag sets", () => {
     await page.goto("/");
     const initialTabs = await page.locator(".set-tab[role='tab']").count();
 
-    // Open + dropdown and click blank set
+    // Click + to create a blank set
     await page.locator(".add-tab").click();
-    await page.getByText("空のセット").click();
 
     const newTabs = await page.locator(".set-tab[role='tab']").count();
     expect(newTabs).toBe(initialTabs + 1);
@@ -152,7 +151,6 @@ test.describe("Journey: Multiple tag sets", () => {
 
     // Create a new blank set
     await page.locator(".add-tab").click();
-    await page.getByText("空のセット").click();
 
     // Blank set should have fewer cells
     const blankCells = await page.locator(".preview-cell").count();
@@ -178,7 +176,6 @@ test.describe("Journey: Multiple tag sets", () => {
 
     // Create a second set first
     await page.locator(".add-tab").click();
-    await page.getByText("空のセット").click();
     const tabsAfterCreate = await page.locator(".set-tab[role='tab']").count();
 
     // Delete the active set
@@ -256,7 +253,6 @@ test.describe("Journey: Persistence", () => {
 
     // Create second set
     await page.locator(".add-tab").click();
-    await page.getByText("空のセット").click();
 
     // Wait for auto-save
     await page.waitForTimeout(700);
