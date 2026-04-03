@@ -8,8 +8,9 @@
     "build": "vite build",
     "preview": "vite preview",
     "lint": "oxlint .",
-    "format": "oxfmt --write .",
-    "format:check": "oxfmt --check .",
+    "lint:fix": "oxlint --fix .",
+    "fmt": "oxfmt --write .",
+    "fmt:check": "oxfmt --check .",
     "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json"
   },
   "devDependencies": {
