@@ -17,6 +17,14 @@ export default ts.config(
     },
   },
   {
+    files: ["*.config.js", "*.config.ts"],
+    languageOptions: {
+      globals: {
+        ...globals.node,
+      },
+    },
+  },
+  {
     files: ["**/*.svelte", "**/*.svelte.ts", "**/*.svelte.js"],
     languageOptions: {
       parserOptions: {
