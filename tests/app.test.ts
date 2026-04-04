@@ -239,6 +239,40 @@ test.describe("Journey: Multiple tag sets", () => {
     expect(tabsAfterDelete).toBe(tabsAfterCreate - 1);
   });
 
+  test("tabs have draggable attribute for reordering", async ({ page }) => {
+    await page.goto("/");
+    await page.locator(".add-tab").click();
+
+    const tabs = page.locator(".set-tab[role='tab']");
+    await expect(tabs.nth(0)).toHaveAttribute("draggable", "true");
+    await expect(tabs.nth(1)).toHaveAttribute("draggable", "true");
+  });
+
+  test("reordering sets changes tab order", async ({ page }) => {
+    await page.goto("/");
+    await page.locator(".add-tab").click();
+
+    const tabs = page.locator(".set-tab[role='tab']");
+    const firstName = await tabs.nth(0).locator(".set-tab-name").textContent();
+    const secondName = await tabs.nth(1).locator(".set-tab-name").textContent();
+
+    // Reorder via localStorage (simulates moveSet result) and reload
+    await page.waitForTimeout(700);
+    await page.evaluate(() => {
+      const raw = localStorage.getItem("tag-table-editor-v2");
+      const stored = JSON.parse(raw!);
+      const keys = Object.keys(stored.sets);
+      const reordered: Record<string, unknown> = {};
+      for (const k of keys.reverse()) reordered[k] = stored.sets[k];
+      stored.sets = reordered;
+      localStorage.setItem("tag-table-editor-v2", JSON.stringify(stored));
+    });
+    await page.reload();
+
+    await expect(tabs.nth(0).locator(".set-tab-name")).toHaveText(secondName!);
+    await expect(tabs.nth(1).locator(".set-tab-name")).toHaveText(firstName!);
+  });
+
   test("context menu closes on outside click", async ({ page }) => {
     await page.goto("/");
     const tab = page.locator(".set-tab[role='tab']").first();
@@ -313,6 +347,39 @@ test.describe("Journey: Persistence", () => {
 
     // Verify edit persisted
     await expect(page.locator(".preview-cell").first()).toContainText("永続化テスト");
+  });
+
+  test("tab order persists across reload", async ({ page }) => {
+    await page.goto("/");
+
+    // Create a second set
+    await page.locator(".add-tab").click();
+    await page.waitForTimeout(700);
+
+    const tabs = page.locator(".set-tab[role='tab']");
+    const firstName = await tabs.nth(0).locator(".set-tab-name").textContent();
+    const secondName = await tabs.nth(1).locator(".set-tab-name").textContent();
+
+    // Reorder via localStorage and reload to set up the reordered state
+    await page.evaluate(() => {
+      const raw = localStorage.getItem("tag-table-editor-v2");
+      const stored = JSON.parse(raw!);
+      const keys = Object.keys(stored.sets);
+      const reordered: Record<string, unknown> = {};
+      for (const k of keys.reverse()) reordered[k] = stored.sets[k];
+      stored.sets = reordered;
+      localStorage.setItem("tag-table-editor-v2", JSON.stringify(stored));
+    });
+    await page.reload();
+
+    // Verify reorder persisted
+    await expect(tabs.nth(0).locator(".set-tab-name")).toHaveText(secondName!);
+    await expect(tabs.nth(1).locator(".set-tab-name")).toHaveText(firstName!);
+
+    // Reload again to verify it persists across multiple visits
+    await page.reload();
+    await expect(tabs.nth(0).locator(".set-tab-name")).toHaveText(secondName!);
+    await expect(tabs.nth(1).locator(".set-tab-name")).toHaveText(firstName!);
   });
 
   test("active set persists across reload", async ({ page }) => {

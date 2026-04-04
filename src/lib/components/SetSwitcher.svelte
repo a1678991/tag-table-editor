@@ -7,6 +7,7 @@
 		deleteSet,
 		renameSet,
 		duplicateSet,
+		moveSet,
 	} from "$lib/state.svelte";
 
 	let editingName: string | null = $state(null);
@@ -43,6 +44,32 @@
 		contextMenu = null;
 	}
 
+	function handleTabDragStart(index: number, e: DragEvent) {
+		e.dataTransfer!.effectAllowed = "move";
+		e.dataTransfer!.setData("application/set-tab", String(index));
+		(e.currentTarget as HTMLElement).style.opacity = "0.4";
+		e.stopPropagation();
+	}
+
+	function handleTabDragOver(index: number, e: DragEvent) {
+		if (e.dataTransfer!.types.includes("application/set-tab")) {
+			e.preventDefault();
+			e.dataTransfer!.dropEffect = "move";
+		}
+	}
+
+	function handleTabDrop(targetIndex: number, e: DragEvent) {
+		e.preventDefault();
+		const raw = e.dataTransfer!.getData("application/set-tab");
+		if (raw === "") return;
+		const fromIndex = parseInt(raw, 10);
+		moveSet(fromIndex, targetIndex);
+	}
+
+	function handleTabDragEnd(e: DragEvent) {
+		(e.currentTarget as HTMLElement).style.opacity = "1";
+	}
+
 </script>
 
 <svelte:window onkeydown={(e) => { if (e.key === "Escape") closeContextMenu(); }} />
@@ -50,7 +77,7 @@
 <div class="border-b border-base-content/10 bg-base-200">
 	<div class="flex items-stretch px-2 gap-0.5">
 		<div class="flex items-stretch overflow-x-auto gap-0.5">
-			{#each getSetNames() as name (name)}
+			{#each getSetNames() as name, index (name)}
 				{@const active = name === getActiveSetName()}
 				{#if editingName === name}
 					<input
@@ -66,11 +93,16 @@
 						class:active
 						role="tab"
 						tabindex="0"
+						draggable="true"
 						onclick={() => switchSet(name)}
 						ondblclick={() => handleStartRename(name)}
 						oncontextmenu={(e) => handleContextMenu(e, name)}
 						onkeydown={(e) => { if (e.key === "Enter") switchSet(name); }}
-						title="クリックで切替 / ダブルクリックでリネーム / 右クリックでメニュー"
+						ondragstart={(e) => handleTabDragStart(index, e)}
+						ondragover={(e) => handleTabDragOver(index, e)}
+						ondrop={(e) => handleTabDrop(index, e)}
+						ondragend={handleTabDragEnd}
+						title="ドラッグで並び替え / クリックで切替 / ダブルクリックでリネーム / 右クリックでメニュー"
 					>
 						<span class="set-tab-name max-w-40 overflow-hidden text-ellipsis">{name}</span>
 						{#if getSetNames().length > 1}

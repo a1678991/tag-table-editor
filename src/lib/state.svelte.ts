@@ -17,7 +17,9 @@ function initData(): StoredData {
   return loadAllSets() ?? defaultData();
 }
 
-const data: StoredData = $state(initData());
+const initialData = initData();
+const data: StoredData = $state(initialData);
+const setOrder: string[] = $state(Object.keys(initialData.sets));
 
 // --- Undo / Redo ---
 
@@ -27,8 +29,16 @@ const redoStack: string[] = [];
 let lastSnapshotTime = 0;
 let historyVersion = $state(0);
 
+function orderedData(): StoredData {
+  const orderedSets: Record<string, TagTable> = {};
+  for (const name of setOrder) {
+    orderedSets[name] = data.sets[name];
+  }
+  return { sets: orderedSets, activeSet: data.activeSet };
+}
+
 function snapshot(): void {
-  const json = JSON.stringify(data);
+  const json = JSON.stringify(orderedData());
   undoStack.push(json);
   if (undoStack.length > MAX_HISTORY) undoStack.shift();
   redoStack.length = 0;
@@ -46,23 +56,25 @@ function restoreFromJson(json: string): void {
   const restored: StoredData = JSON.parse(json);
   data.activeSet = restored.activeSet;
   for (const key of Object.keys(data.sets)) {
-    if (!(key in restored.sets)) delete data.sets[key];
+    delete data.sets[key];
   }
   for (const [key, value] of Object.entries(restored.sets)) {
     data.sets[key] = value;
   }
+  setOrder.length = 0;
+  setOrder.push(...Object.keys(restored.sets));
 }
 
 export function undo(): void {
   if (undoStack.length === 0) return;
-  redoStack.push(JSON.stringify(data));
+  redoStack.push(JSON.stringify(orderedData()));
   restoreFromJson(undoStack.pop()!);
   historyVersion++;
 }
 
 export function redo(): void {
   if (redoStack.length === 0) return;
-  undoStack.push(JSON.stringify(data));
+  undoStack.push(JSON.stringify(orderedData()));
   restoreFromJson(redoStack.pop()!);
   historyVersion++;
 }
@@ -84,7 +96,7 @@ export function getActiveSetName(): string {
 }
 
 export function getSetNames(): string[] {
-  return Object.keys(data.sets);
+  return setOrder;
 }
 
 export function getTable(): TagTable {
@@ -106,16 +118,18 @@ export function createSet(fromTemplate?: string): string {
   } else {
     data.sets[name] = structuredClone(TEMPLATES.blank.data);
   }
+  setOrder.push(name);
   data.activeSet = name;
   return name;
 }
 
 export function deleteSet(name: string): void {
-  if (Object.keys(data.sets).length <= 1) return;
+  if (setOrder.length <= 1) return;
   snapshot();
   delete data.sets[name];
+  setOrder.splice(setOrder.indexOf(name), 1);
   if (data.activeSet === name) {
-    data.activeSet = Object.keys(data.sets)[0];
+    data.activeSet = setOrder[0];
   }
 }
 
@@ -126,6 +140,7 @@ export function renameSet(oldName: string, newName: string): boolean {
   snapshot();
   data.sets[trimmed] = data.sets[oldName];
   delete data.sets[oldName];
+  setOrder[setOrder.indexOf(oldName)] = trimmed;
   if (data.activeSet === oldName) {
     data.activeSet = trimmed;
   }
@@ -136,8 +151,16 @@ export function duplicateSet(name: string): string {
   snapshot();
   const newName = generateName();
   data.sets[newName] = $state.snapshot(data.sets[name]) as TagTable;
+  setOrder.push(newName);
   data.activeSet = newName;
   return newName;
+}
+
+export function moveSet(from: number, to: number): void {
+  if (from === to) return;
+  snapshot();
+  const [moved] = setOrder.splice(from, 1);
+  setOrder.splice(to, 0, moved);
 }
 
 // --- Derived ---
@@ -174,10 +197,10 @@ let saveTimeout: ReturnType<typeof setTimeout> | undefined;
 
 $effect.root(() => {
   $effect(() => {
-    const json = JSON.stringify(data);
-    void json;
+    void JSON.stringify(data);
+    void setOrder.length;
     clearTimeout(saveTimeout);
-    saveTimeout = setTimeout(() => saveAllSets(data), 500);
+    saveTimeout = setTimeout(() => saveAllSets(orderedData()), 500);
   });
 });
 
