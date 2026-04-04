@@ -25,6 +25,7 @@
 	let showColorPicker = $state(false);
 	let inputEl: HTMLInputElement | undefined = $state();
 	let cellEl: HTMLDivElement | undefined = $state();
+	let textAutoMode = $state(cell.text_color === autoTextColor(cell.bg_color));
 
 	let contrast = $derived(checkCellContrast(cell));
 	let hasContrastWarning = $derived(!contrast.textBgPass || !contrast.bgWorldPass);
@@ -53,7 +54,7 @@
 	}
 
 	function handleBgChange(color: string) {
-		updateCellBgColor(colIndex, cellIndex, color, true);
+		updateCellBgColor(colIndex, cellIndex, color, textAutoMode);
 	}
 
 	function handleTextColorChange(color: string) {
@@ -147,8 +148,9 @@
 					value={cell.text_color}
 					onchange={handleTextColorChange}
 					showAutoToggle={true}
-					isAuto={cell.text_color === autoTextColor(cell.bg_color)}
+					isAuto={textAutoMode}
 					onautotoggle={(auto) => {
+						textAutoMode = auto;
 						if (auto) updateCellBgColor(colIndex, cellIndex, cell.bg_color, true);
 					}}
 				/>
