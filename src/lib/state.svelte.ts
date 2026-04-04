@@ -208,8 +208,14 @@ $effect.root(() => {
 
 export function addColumn(): void {
   snapshot();
+  const columns = getTable().columns;
+  const leftCol = columns[columns.length - 1];
+  const refCell = leftCol?.cells[0];
+  const bgColor = refCell?.bg_color ?? "#14505C";
   getTable().columns.push({
-    cells: [{ text: "", text_color: "#FFFFFF", bg_color: "#14505C" }],
+    cells: [
+      { text: "", text_color: refCell?.text_color ?? autoTextColor(bgColor), bg_color: bgColor },
+    ],
   });
 }
 
@@ -239,7 +245,7 @@ export function addCell(colIndex: number): void {
   const bgColor = lastCell?.bg_color ?? "#14505C";
   getTable().columns[colIndex].cells.push({
     text: "",
-    text_color: autoTextColor(bgColor),
+    text_color: lastCell?.text_color ?? autoTextColor(bgColor),
     bg_color: bgColor,
   });
 }
