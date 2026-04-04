@@ -12,3 +12,7 @@ body {
   height: 100%;
   overflow: hidden;
 }
+
+.font-preview {
+  font-family: "Noto Sans JP", "Noto Sans", sans-serif;
+}
