@@ -27,6 +27,39 @@ export function isValidColor(c: string): boolean {
   return /^#[0-9A-Fa-f]{6}([0-9A-Fa-f]{2})?$/.test(c);
 }
 
+/** VRChat world background color for non-text contrast checking */
+export const VRCHAT_BG = "#A0A0A0";
+
+/** WCAG contrast ratio between two hex colors. Returns a number >= 1, or 0 for invalid input. */
+export function contrastRatio(hex1: string, hex2: string): number {
+  const rgb1 = hexToRgb(hex1);
+  const rgb2 = hexToRgb(hex2);
+  if (!rgb1 || !rgb2) return 0;
+  const l1 = relativeLuminance(rgb1.r, rgb1.g, rgb1.b);
+  const l2 = relativeLuminance(rgb2.r, rgb2.g, rgb2.b);
+  const lighter = Math.max(l1, l2);
+  const darker = Math.min(l1, l2);
+  return (lighter + 0.05) / (darker + 0.05);
+}
+
+export interface ContrastResult {
+  textBgRatio: number;
+  textBgPass: boolean;
+  bgWorldRatio: number;
+  bgWorldPass: boolean;
+}
+
+export function checkCellContrast(cell: { text_color: string; bg_color: string }): ContrastResult {
+  const textBgRatio = contrastRatio(cell.text_color, cell.bg_color);
+  const bgWorldRatio = contrastRatio(cell.bg_color, VRCHAT_BG);
+  return {
+    textBgRatio,
+    textBgPass: textBgRatio >= 4.5,
+    bgWorldRatio,
+    bgWorldPass: bgWorldRatio >= 3,
+  };
+}
+
 export const PRESET_COLORS = [
   "#14505C",
   "#E6B8B0",

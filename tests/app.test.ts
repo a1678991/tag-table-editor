@@ -497,3 +497,32 @@ test.describe("Journey: Undo / Redo", () => {
     await expect(undoBtn).toBeEnabled();
   });
 });
+
+// ============================================================
+// Journey 9: WCAG Contrast
+// ============================================================
+test.describe("Journey: WCAG Contrast", () => {
+  test("cells with poor contrast show warning indicator", async ({ page }) => {
+    // Default template has cells like #E6B8B0 that fail 3:1 vs #A0A0A0
+    const warnings = page.locator(".contrast-warn");
+    await expect(warnings.first()).toBeVisible();
+  });
+
+  test("color picker shows contrast ratios", async ({ page }) => {
+    await page.locator(".preview-cell").first().click();
+    const contrastInfo = page.locator(".picker-dropdown .contrast-info");
+    await expect(contrastInfo).toBeVisible();
+    await expect(contrastInfo).toContainText(":1");
+  });
+
+  test("cell with good contrast has no warning", async ({ page }) => {
+    // Blank template: #14505C (passes 3:1 vs #A0A0A0) + #FFFFFF text (passes 4.5:1)
+    await page.locator(".add-tab").click();
+    await expect(page.locator(".contrast-warn")).toHaveCount(0);
+  });
+
+  test("contrast warnings counted in validation badge", async ({ page }) => {
+    const warningBadge = page.locator(".badge-warning.badge-outline");
+    await expect(warningBadge).toBeVisible();
+  });
+});

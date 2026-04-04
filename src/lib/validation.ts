@@ -1,5 +1,5 @@
 import type { TagTable, ValidationError } from "./types";
-import { isValidColor } from "./color-utils";
+import { isValidColor, checkCellContrast } from "./color-utils";
 
 export function validate(table: TagTable): ValidationError[] {
   const errors: ValidationError[] = [];
@@ -45,6 +45,24 @@ export function validate(table: TagTable): ValidationError[] {
           path: `${cellPath}.text_color`,
           message: "文字色の形式が不正です",
         });
+      }
+
+      if (isValidColor(cell.bg_color) && isValidColor(cell.text_color)) {
+        const cr = checkCellContrast(cell);
+        if (!cr.textBgPass) {
+          errors.push({
+            type: "warning",
+            path: cellPath,
+            message: `文字と背景のコントラスト比が不足しています (${cr.textBgRatio.toFixed(1)}:1 < 4.5:1)`,
+          });
+        }
+        if (!cr.bgWorldPass) {
+          errors.push({
+            type: "warning",
+            path: cellPath,
+            message: `ボタンがワールド背景と区別しにくいです (${cr.bgWorldRatio.toFixed(1)}:1 < 3:1)`,
+          });
+        }
       }
     }
   }

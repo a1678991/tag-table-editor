@@ -6,7 +6,7 @@
 		updateCellTextColor,
 		removeCell,
 	} from "$lib/state.svelte";
-	import { autoTextColor } from "$lib/color-utils";
+	import { autoTextColor, checkCellContrast } from "$lib/color-utils";
 	import ColorPicker from "./ColorPicker.svelte";
 
 	let {
@@ -25,6 +25,9 @@
 	let showColorPicker = $state(false);
 	let inputEl: HTMLInputElement | undefined = $state();
 	let cellEl: HTMLDivElement | undefined = $state();
+
+	let contrast = $derived(checkCellContrast(cell));
+	let hasContrastWarning = $derived(!contrast.textBgPass || !contrast.bgWorldPass);
 
 	function handleClick(e: MouseEvent) {
 		if (editing) return;
@@ -121,6 +124,17 @@
 		</div>
 	{/if}
 
+	{#if hasContrastWarning && !editing}
+		<div
+			class="contrast-warn absolute -top-1 -right-1 w-3 h-3 rounded-full bg-warning text-warning-content text-[7px] leading-none flex items-center justify-center pointer-events-none"
+			title={!contrast.textBgPass && !contrast.bgWorldPass
+				? "文字コントラストとボタンコントラストが不足"
+				: !contrast.textBgPass
+					? "文字と背景のコントラスト不足"
+					: "ボタンとワールド背景のコントラスト不足"}
+		>!</div>
+	{/if}
+
 	{#if showColorPicker}
 		<div class="picker-dropdown absolute top-full left-0 z-50 mt-1 p-2 bg-[#2a303c] border border-white/12 rounded-lg shadow-[0_8px_24px_rgba(0,0,0,0.6)] min-w-[220px] flex flex-col gap-1.5">
 			<div class="flex items-start gap-1.5">
@@ -138,6 +152,21 @@
 						if (auto) updateCellBgColor(colIndex, cellIndex, cell.bg_color, true);
 					}}
 				/>
+			</div>
+			<div class="contrast-info mt-1 pt-1.5 border-t border-white/8 flex flex-col gap-0.5">
+				<span class="text-[10px] opacity-40">WCAG コントラスト</span>
+				<div class="flex items-center justify-between text-[10px]">
+					<span class="opacity-50">文字 / 背景</span>
+					<span class={contrast.textBgPass ? "text-success" : "text-warning"}>
+						{contrast.textBgRatio.toFixed(1)}:1 {contrast.textBgPass ? "✓ AA" : "✗ AA 4.5:1"}
+					</span>
+				</div>
+				<div class="flex items-center justify-between text-[10px]">
+					<span class="opacity-50" title="ボタンとワールド背景の区別 (WCAG 1.4.11)">ボタン / ワールド</span>
+					<span class={contrast.bgWorldPass ? "text-success" : "text-warning"}>
+						{contrast.bgWorldRatio.toFixed(1)}:1 {contrast.bgWorldPass ? "✓ AA" : "✗ AA 3:1"}
+					</span>
+				</div>
 			</div>
 			<button
 				type="button"
