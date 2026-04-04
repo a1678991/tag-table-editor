@@ -16,28 +16,28 @@
     },
     {
       "cells": [
-        { "text": "マイクロサービス", "text_color": "#000000", "bg_color": "#E6B8B0" },
-        { "text": "モノリス再評価", "text_color": "#000000", "bg_color": "#A0C4E8" },
-        { "text": "DDD", "text_color": "#000000", "bg_color": "#CC9EEC" },
-        { "text": "Clean Architecture", "text_color": "#000000", "bg_color": "#CC9EEC" },
-        { "text": "Ports & Adapters", "text_color": "#000000", "bg_color": "#CC9EEC" },
-        { "text": "イベント駆動 / ES", "text_color": "#000000", "bg_color": "#CC9EEC" },
-        { "text": "CQRS", "text_color": "#000000", "bg_color": "#CC9EEC" },
-        { "text": "関数型", "text_color": "#000000", "bg_color": "#B6D8A8" },
-        { "text": "オブジェクト指向", "text_color": "#000000", "bg_color": "#B6D8A8" }
+        { "text": "マイクロサービス", "text_color": "#FFFFFF", "bg_color": "#8C1A2E" },
+        { "text": "モノリス再評価", "text_color": "#FFFFFF", "bg_color": "#0A4C72" },
+        { "text": "DDD", "text_color": "#FFFFFF", "bg_color": "#4B2D8E" },
+        { "text": "Clean Architecture", "text_color": "#FFFFFF", "bg_color": "#4B2D8E" },
+        { "text": "Ports & Adapters", "text_color": "#FFFFFF", "bg_color": "#4B2D8E" },
+        { "text": "イベント駆動 / ES", "text_color": "#FFFFFF", "bg_color": "#4B2D8E" },
+        { "text": "CQRS", "text_color": "#FFFFFF", "bg_color": "#4B2D8E" },
+        { "text": "関数型", "text_color": "#FFFFFF", "bg_color": "#165A2B" },
+        { "text": "オブジェクト指向", "text_color": "#FFFFFF", "bg_color": "#165A2B" }
       ]
     },
     {
       "cells": [
-        { "text": "API 設計", "text_color": "#FFFFFF", "bg_color": "#B21414" },
-        { "text": "権限設計", "text_color": "#FFFFFF", "bg_color": "#B21414" },
-        { "text": "パフォーマンス", "text_color": "#FFFFFF", "bg_color": "#B21414" },
-        { "text": "コスト最適化", "text_color": "#FFFFFF", "bg_color": "#B21414" },
-        { "text": "分散システム", "text_color": "#FFFFFF", "bg_color": "#B21414" },
-        { "text": "言語設計", "text_color": "#FFFFFF", "bg_color": "#B21414" },
-        { "text": "AI / LLM", "text_color": "#FFFFFF", "bg_color": "#B21414" },
-        { "text": "静的型付け", "text_color": "#000000", "bg_color": "#B6D8A8" },
-        { "text": "動的型付け", "text_color": "#000000", "bg_color": "#B6D8A8" }
+        { "text": "API 設計", "text_color": "#FFFFFF", "bg_color": "#701416" },
+        { "text": "権限設計", "text_color": "#FFFFFF", "bg_color": "#701416" },
+        { "text": "パフォーマンス", "text_color": "#FFFFFF", "bg_color": "#701416" },
+        { "text": "コスト最適化", "text_color": "#FFFFFF", "bg_color": "#701416" },
+        { "text": "分散システム", "text_color": "#FFFFFF", "bg_color": "#701416" },
+        { "text": "言語設計", "text_color": "#FFFFFF", "bg_color": "#701416" },
+        { "text": "AI / LLM", "text_color": "#FFFFFF", "bg_color": "#701416" },
+        { "text": "静的型付け", "text_color": "#FFFFFF", "bg_color": "#165A2B" },
+        { "text": "動的型付け", "text_color": "#FFFFFF", "bg_color": "#165A2B" }
       ]
     },
     {
@@ -45,25 +45,25 @@
         { "text": "スキーマ設計", "text_color": "#FFFFFF", "bg_color": "#3040A0" },
         { "text": "トランザクション", "text_color": "#FFFFFF", "bg_color": "#3040A0" },
         { "text": "メッセージング", "text_color": "#FFFFFF", "bg_color": "#3040A0" },
-        { "text": "ADR / ATAM", "text_color": "#000000", "bg_color": "#F6B26C" },
-        { "text": "UML / C4 モデル", "text_color": "#000000", "bg_color": "#F6B26C" },
-        { "text": "Design Doc", "text_color": "#000000", "bg_color": "#F6B26C" },
-        { "text": "EventStorming", "text_color": "#000000", "bg_color": "#F6B26C" },
-        { "text": "リファクタリング", "text_color": "#000000", "bg_color": "#F6B26C" },
-        { "text": "レガシー移行戦略", "text_color": "#000000", "bg_color": "#F6B26C" }
+        { "text": "ADR / ATAM", "text_color": "#FFFFFF", "bg_color": "#614A10" },
+        { "text": "UML / C4 モデル", "text_color": "#FFFFFF", "bg_color": "#614A10" },
+        { "text": "Design Doc", "text_color": "#FFFFFF", "bg_color": "#614A10" },
+        { "text": "EventStorming", "text_color": "#FFFFFF", "bg_color": "#614A10" },
+        { "text": "リファクタリング", "text_color": "#FFFFFF", "bg_color": "#614A10" },
+        { "text": "レガシー移行戦略", "text_color": "#FFFFFF", "bg_color": "#614A10" }
       ]
     },
     {
       "cells": [
-        { "text": "初参加", "text_color": "#FFFFFF", "bg_color": "#2E7C32" },
-        { "text": "雑談", "text_color": "#000000", "bg_color": "#70A8DC" },
-        { "text": "見学", "text_color": "#000000", "bg_color": "#70A8DC" },
-        { "text": "無言勢", "text_color": "#000000", "bg_color": "#70A8DC" },
-        { "text": "Vibe でいこうぜ", "text_color": "#000000", "bg_color": "#F45A9C" },
-        { "text": "コードで語れ", "text_color": "#000000", "bg_color": "#F45A9C" },
-        { "text": "いのちだいじに", "text_color": "#000000", "bg_color": "#F45A9C" },
-        { "text": "ねこ", "text_color": "#000000", "bg_color": "#FFE498" },
-        { "text": "きつね", "text_color": "#000000", "bg_color": "#FFE498" }
+        { "text": "初参加", "text_color": "#FFFFFF", "bg_color": "#2E5020" },
+        { "text": "雑談", "text_color": "#FFFFFF", "bg_color": "#0D4D6B" },
+        { "text": "見学", "text_color": "#FFFFFF", "bg_color": "#0D4D6B" },
+        { "text": "無言勢", "text_color": "#FFFFFF", "bg_color": "#0D4D6B" },
+        { "text": "Vibe でいこうぜ", "text_color": "#FFFFFF", "bg_color": "#962150" },
+        { "text": "コードで語れ", "text_color": "#FFFFFF", "bg_color": "#962150" },
+        { "text": "いのちだいじに", "text_color": "#FFFFFF", "bg_color": "#962150" },
+        { "text": "ねこ", "text_color": "#FFFFFF", "bg_color": "#6B3A2A" },
+        { "text": "きつね", "text_color": "#FFFFFF", "bg_color": "#6B3A2A" }
       ]
     }
   ]

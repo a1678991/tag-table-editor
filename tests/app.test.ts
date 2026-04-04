@@ -503,7 +503,12 @@ test.describe("Journey: Undo / Redo", () => {
 // ============================================================
 test.describe("Journey: WCAG Contrast", () => {
   test("cells with poor contrast show warning indicator", async ({ page }) => {
-    // Default template has cells like #E6B8B0 that fail 3:1 vs #A0A0A0
+    // Set a cell's bg color to #A0A0A0 (identical to world bg, fails 3:1)
+    await page.locator(".preview-cell").first().click();
+    const bgInput = page.locator(".picker-dropdown input[type='text']").first();
+    await bgInput.fill("#A0A0A0");
+    await bgInput.press("Enter");
+    await page.locator("body").click();
     const warnings = page.locator(".contrast-warn");
     await expect(warnings.first()).toBeVisible();
   });
@@ -515,13 +520,18 @@ test.describe("Journey: WCAG Contrast", () => {
     await expect(contrastInfo).toContainText(":1");
   });
 
-  test("cell with good contrast has no warning", async ({ page }) => {
-    // Blank template: #14505C (passes 3:1 vs #A0A0A0) + #FFFFFF text (passes 4.5:1)
-    await page.locator(".add-tab").click();
+  test("default template has no contrast warnings", async ({ page }) => {
+    // All default template colors now pass WCAG AA
     await expect(page.locator(".contrast-warn")).toHaveCount(0);
   });
 
   test("contrast warnings counted in validation badge", async ({ page }) => {
+    // Set a cell's bg color to something that fails contrast
+    await page.locator(".preview-cell").first().click();
+    const bgInput = page.locator(".picker-dropdown input[type='text']").first();
+    await bgInput.fill("#A0A0A0");
+    await bgInput.press("Enter");
+    await page.locator("body").click();
     const warningBadge = page.locator(".badge-warning.badge-outline");
     await expect(warningBadge).toBeVisible();
   });
