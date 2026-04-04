@@ -329,3 +329,27 @@ export function loadTemplate(name: string): void {
 export function resetTable(): void {
   loadTemplate("blank");
 }
+
+// --- Cell focus request (for keyboard navigation) ---
+
+interface FocusRequest {
+  colIndex: number;
+  cellIndex: number;
+  token: number;
+}
+
+let focusRequest: FocusRequest | null = $state(null);
+let focusToken = 0;
+
+export function requestCellFocus(colIndex: number, cellIndex: number): void {
+  focusToken++;
+  focusRequest = { colIndex, cellIndex, token: focusToken };
+}
+
+export function getFocusRequest(): FocusRequest | null {
+  return focusRequest;
+}
+
+export function clearFocusRequest(): void {
+  focusRequest = null;
+}

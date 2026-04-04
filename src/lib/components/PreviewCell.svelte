@@ -5,6 +5,11 @@
 		updateCellBgColor,
 		updateCellTextColor,
 		removeCell,
+		getTable,
+		addCell,
+		requestCellFocus,
+		getFocusRequest,
+		clearFocusRequest,
 	} from "$lib/state.svelte";
 	import { autoTextColor, checkCellContrast } from "$lib/color-utils";
 	import ColorPicker from "./ColorPicker.svelte";
@@ -48,7 +53,38 @@
 	}
 
 	function handleInputKeydown(e: KeyboardEvent) {
-		if (e.key === "Enter" || e.key === "Escape") {
+		if (e.key === "Enter") {
+			e.preventDefault();
+			editing = false;
+			const table = getTable();
+			const totalCells = table.columns[colIndex].cells.length;
+			if (cellIndex >= totalCells - 1) {
+				addCell(colIndex);
+				requestCellFocus(colIndex, totalCells);
+			} else {
+				requestCellFocus(colIndex, cellIndex + 1);
+			}
+		} else if (e.key === "Tab") {
+			e.preventDefault();
+			editing = false;
+			const table = getTable();
+			const totalColumns = table.columns.length;
+			if (e.shiftKey) {
+				if (colIndex > 0) {
+					const targetCells = table.columns[colIndex - 1].cells.length;
+					if (targetCells > 0) {
+						requestCellFocus(colIndex - 1, Math.min(cellIndex, targetCells - 1));
+					}
+				}
+			} else {
+				if (colIndex < totalColumns - 1) {
+					const targetCells = table.columns[colIndex + 1].cells.length;
+					if (targetCells > 0) {
+						requestCellFocus(colIndex + 1, Math.min(cellIndex, targetCells - 1));
+					}
+				}
+			}
+		} else if (e.key === "Escape") {
 			editing = false;
 		}
 	}
@@ -81,6 +117,18 @@
 	function handleDragEnd(e: DragEvent) {
 		(e.currentTarget as HTMLElement).style.opacity = "1";
 	}
+
+	$effect(() => {
+		const req = getFocusRequest();
+		if (req && req.colIndex === colIndex && req.cellIndex === cellIndex) {
+			clearFocusRequest();
+			editing = true;
+			requestAnimationFrame(() => {
+				inputEl?.focus();
+				inputEl?.select();
+			});
+		}
+	});
 
 	$effect(() => {
 		if (showColorPicker) {

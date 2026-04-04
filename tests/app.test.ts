@@ -526,3 +526,71 @@ test.describe("Journey: WCAG Contrast", () => {
     await expect(warningBadge).toBeVisible();
   });
 });
+
+// ============================================================
+// Journey: Keyboard navigation (spreadsheet-like)
+// ============================================================
+test.describe("Journey: Keyboard navigation", () => {
+  test("Enter moves focus to next cell below", async ({ page }) => {
+    await page.goto("/");
+    const firstCell = page.locator(".preview-cell").first();
+    await firstCell.dblclick();
+    await expect(page.locator(".preview-cell-input")).toBeFocused();
+
+    await page.keyboard.press("Enter");
+
+    const input = page.locator(".preview-cell-input");
+    await expect(input).toBeVisible();
+    await expect(input).toBeFocused();
+  });
+
+  test("Enter at last cell creates new cell and focuses it", async ({ page }) => {
+    // Use blank template for predictable cell count
+    await page.locator(".add-tab").click();
+    const columns = page.locator(".group");
+    const firstColumn = columns.first();
+    const cellsBefore = await firstColumn.locator(".preview-cell").count();
+
+    // Double-click last cell in first column
+    await firstColumn.locator(".preview-cell").last().dblclick();
+    await page.keyboard.press("Enter");
+
+    // Should have one more cell
+    await expect(firstColumn.locator(".preview-cell, .preview-cell-input")).toHaveCount(
+      cellsBefore + 1,
+    );
+    // New cell should be in edit mode
+    await expect(page.locator(".preview-cell-input")).toBeFocused();
+  });
+
+  test("Tab moves focus to same row in next column", async ({ page }) => {
+    await page.goto("/");
+    await page.locator(".preview-cell").first().dblclick();
+    await expect(page.locator(".preview-cell-input")).toBeFocused();
+
+    await page.keyboard.press("Tab");
+
+    await expect(page.locator(".preview-cell-input")).toBeFocused();
+  });
+
+  test("Shift+Tab moves focus to previous column", async ({ page }) => {
+    await page.goto("/");
+    // Enter edit on first cell, Tab to second column
+    await page.locator(".preview-cell").first().dblclick();
+    await page.keyboard.press("Tab");
+    await expect(page.locator(".preview-cell-input")).toBeFocused();
+
+    // Shift+Tab back
+    await page.keyboard.press("Shift+Tab");
+    await expect(page.locator(".preview-cell-input")).toBeFocused();
+  });
+
+  test("Escape exits edit mode without navigation", async ({ page }) => {
+    await page.goto("/");
+    await page.locator(".preview-cell").first().dblclick();
+    await expect(page.locator(".preview-cell-input")).toBeFocused();
+
+    await page.keyboard.press("Escape");
+    await expect(page.locator(".preview-cell-input")).toHaveCount(0);
+  });
+});
