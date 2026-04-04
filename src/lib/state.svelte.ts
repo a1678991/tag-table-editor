@@ -1,4 +1,4 @@
-import type { TagTable, ValidationError } from "./types";
+import { TagTableSchema, type TagTable, type ValidationError } from "./types";
 import { autoTextColor } from "./color-utils";
 import { validate } from "./validation";
 import { loadAllSets, saveAllSets, type StoredData } from "./persistence";
@@ -305,12 +305,14 @@ export function importJson(jsonStr: string): {
 } {
   try {
     const parsed = JSON.parse(jsonStr);
-    if (!parsed.columns || !Array.isArray(parsed.columns)) {
-      return { ok: false, error: "columns フィールドが見つかりません" };
+    const result = TagTableSchema.safeParse(parsed);
+    if (!result.success) {
+      const first = result.error.issues[0];
+      return { ok: false, error: `${first.path.join(".")}: ${first.message}` };
     }
     snapshot();
-    getTable().column_width = parsed.column_width ?? 0.5;
-    getTable().columns = parsed.columns;
+    getTable().column_width = result.data.column_width;
+    getTable().columns = result.data.columns;
     return { ok: true };
   } catch {
     return { ok: false, error: "JSONの形式が不正です" };

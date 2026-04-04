@@ -1,3 +1,5 @@
+import { HEX_COLOR_PATTERN } from "./types";
+
 export function hexToRgb(hex: string): { r: number; g: number; b: number } | null {
   const m = hex.match(/^#([0-9A-Fa-f]{2})([0-9A-Fa-f]{2})([0-9A-Fa-f]{2})/);
   if (!m) return null;
@@ -24,7 +26,7 @@ export function autoTextColor(bgHex: string): string {
 }
 
 export function isValidColor(c: string): boolean {
-  return /^#[0-9A-Fa-f]{6}([0-9A-Fa-f]{2})?$/.test(c);
+  return HEX_COLOR_PATTERN.test(c);
 }
 
 /** VRChat world background color for non-text contrast checking */

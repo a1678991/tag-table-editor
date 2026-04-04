@@ -1,62 +1,52 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://a1678991.github.io/tag-table-editor/tag-table.schema.json",
-  "title": "TagTable",
-  "description": "Tag table definition for VRChat YodoTagBuilder. Max 64 cells total across all columns.",
   "type": "object",
-  "required": ["column_width", "columns"],
-  "additionalProperties": false,
   "properties": {
-    "$schema": {
-      "type": "string"
-    },
     "column_width": {
       "type": "number",
-      "description": "Default column width in world-space units",
       "minimum": 0.1,
-      "maximum": 2.0
+      "maximum": 2
     },
     "columns": {
       "type": "array",
-      "description": "Array of columns, each containing vertically stacked tag cells",
       "items": {
         "type": "object",
-        "required": ["cells"],
-        "additionalProperties": false,
         "properties": {
           "width": {
             "type": "number",
-            "description": "Per-column width override in world-space units. Falls back to column_width if omitted.",
             "minimum": 0.1,
-            "maximum": 2.0
+            "maximum": 2
           },
           "cells": {
             "type": "array",
-            "description": "Tag cells stacked vertically in this column",
             "items": {
               "type": "object",
-              "required": ["text", "text_color", "bg_color"],
-              "additionalProperties": false,
               "properties": {
                 "text": {
-                  "type": "string",
-                  "description": "Display text on the tag button"
+                  "type": "string"
                 },
                 "text_color": {
                   "type": "string",
-                  "description": "Text color in #RRGGBB or #RRGGBBAA format",
                   "pattern": "^#[0-9A-Fa-f]{6}([0-9A-Fa-f]{2})?$"
                 },
                 "bg_color": {
                   "type": "string",
-                  "description": "Background color in #RRGGBB or #RRGGBBAA format",
                   "pattern": "^#[0-9A-Fa-f]{6}([0-9A-Fa-f]{2})?$"
                 }
-              }
+              },
+              "required": ["text", "text_color", "bg_color"],
+              "additionalProperties": false
             }
           }
-        }
+        },
+        "required": ["cells"],
+        "additionalProperties": false
       }
     }
-  }
+  },
+  "required": ["column_width", "columns"],
+  "additionalProperties": false,
+  "$id": "https://a1678991.github.io/tag-table-editor/tag-table.schema.json",
+  "title": "TagTable",
+  "description": "Tag table definition for VRChat YodoTagBuilder. Max 64 cells total across all columns."
 }
