@@ -26,12 +26,18 @@ bunx playwright test --grep "pattern"  # Run specific test
 
 ## Tech Stack
 
-- **Svelte 5** with runes (`$state`, `$derived`, `$effect`, `$props`)
-- **SvelteKit** with `adapter-static` (SPA mode, `ssr = false`, `prerender = true`)
+- **Svelte 5** with runes (`$state`, `$derived`, `$effect`, `$props`) — https://svelte.dev/docs/svelte
+- **SvelteKit** with `adapter-static` (SPA mode, `ssr = false`, `prerender = true`) — https://svelte.dev/docs/kit
 - **Tailwind CSS 4** + **DaisyUI 5** (`dim` theme) — prefer utility classes over `<style>` blocks
+  - Tailwind CSS: https://tailwindcss.com/docs
+  - DaisyUI: https://daisyui.com/docs
 - **Linting**: oxlint (categories: correctness/error, suspicious+perf/warn) + ESLint with `eslint-plugin-svelte` + `eslint-plugin-oxlint` (dedup, must be last in config)
-- **Formatting**: oxfmt (printWidth 100, double quotes, semicolons, trailing commas)
-- **Testing**: Playwright (Chromium only, tests build+preview then run)
+  - oxlint: https://oxc.rs/docs/guide/usage/linter
+  - ESLint: https://eslint.org/docs/latest
+  - eslint-plugin-svelte: https://sveltejs.github.io/eslint-plugin-svelte
+- **Formatting**: oxfmt (printWidth 100, double quotes, semicolons, trailing commas) — https://oxc.rs/docs/guide/usage/formatter
+- **Testing**: Playwright (Chromium only, tests build+preview then run) — https://playwright.dev/docs/intro
+- **Runtime**: Bun — https://bun.sh/docs
 
 ## Architecture
 
