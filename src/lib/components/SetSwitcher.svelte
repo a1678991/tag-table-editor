@@ -42,9 +42,10 @@
 	function closeContextMenu() {
 		contextMenu = null;
 	}
+
 </script>
 
-<svelte:window onclick={closeContextMenu} onkeydown={(e) => { if (e.key === "Escape") closeContextMenu(); }} />
+<svelte:window onkeydown={(e) => { if (e.key === "Escape") closeContextMenu(); }} />
 
 <div class="border-b border-base-content/10 bg-base-200">
 	<div class="flex items-stretch px-2 gap-0.5">
@@ -97,25 +98,26 @@
 </div>
 
 {#if contextMenu}
-	<!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
+	{@const menuName = contextMenu.name}
+	<!-- svelte-ignore a11y_no_static_element_interactions -->
+	<div class="set-tab-context-backdrop fixed inset-0 z-40" onclick={closeContextMenu}></div>
 	<ul
 		class="set-tab-context-menu menu bg-base-200 rounded-box z-50 w-48 p-2 shadow-lg fixed"
 		style="left: {contextMenu.x}px; top: {contextMenu.y}px;"
-		onclick={(e) => e.stopPropagation()}
 	>
 		<li>
-			<button type="button" onclick={() => { duplicateSet(contextMenu!.name); closeContextMenu(); }}>
+			<button type="button" onclick={() => { duplicateSet(menuName); closeContextMenu(); }}>
 				複製
 			</button>
 		</li>
 		<li>
-			<button type="button" onclick={() => { handleStartRename(contextMenu!.name); closeContextMenu(); }}>
+			<button type="button" onclick={() => { handleStartRename(menuName); closeContextMenu(); }}>
 				リネーム
 			</button>
 		</li>
 		{#if getSetNames().length > 1}
 			<li>
-				<button type="button" onclick={() => { deleteSet(contextMenu!.name); closeContextMenu(); }}>
+				<button type="button" onclick={() => { deleteSet(menuName); closeContextMenu(); }}>
 					削除
 				</button>
 			</li>

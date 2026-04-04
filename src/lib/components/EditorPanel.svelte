@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { getTable, addColumn, updateGlobalWidth, moveColumn } from "$lib/state.svelte";
+	import { getTable, addColumn, moveColumn } from "$lib/state.svelte";
 	import ColumnEditor from "./ColumnEditor.svelte";
 
 	function handleColDragStart(colIndex: number, e: DragEvent) {
@@ -31,24 +31,7 @@
 
 <div class="flex flex-col h-full">
 	<div class="px-3 py-2 border-b border-base-content/10">
-		<h2 class="text-sm font-bold opacity-60 mb-2">エディタ</h2>
-		<div class="flex items-center gap-2">
-			<label class="text-xs opacity-50 shrink-0" for="col-width">列幅</label>
-			<input
-				id="col-width"
-				type="range"
-				class="range range-xs range-primary flex-1"
-				min="0.1"
-				max="2.0"
-				step="0.05"
-				value={getTable().column_width}
-				oninput={(e) =>
-					updateGlobalWidth(parseFloat((e.target as HTMLInputElement).value))}
-			/>
-			<span class="text-xs font-mono opacity-50 w-8 text-right">
-				{getTable().column_width.toFixed(2)}
-			</span>
-		</div>
+		<h2 class="text-sm font-bold opacity-60">エディタ</h2>
 	</div>
 
 	<div class="flex-1 overflow-auto p-3 space-y-3">

@@ -49,13 +49,5 @@ export function validate(table: TagTable): ValidationError[] {
     }
   }
 
-  if (table.column_width < 0.1 || table.column_width > 2.0) {
-    errors.push({
-      type: "warning",
-      path: "column_width",
-      message: "幅の値が推奨範囲外です (0.1〜2.0)",
-    });
-  }
-
   return errors;
 }

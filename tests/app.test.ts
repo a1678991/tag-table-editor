@@ -183,6 +183,73 @@ test.describe("Journey: Multiple tag sets", () => {
     const tabsAfterDelete = await page.locator(".set-tab[role='tab']").count();
     expect(tabsAfterDelete).toBe(tabsAfterCreate - 1);
   });
+
+  test("right-click tab shows context menu", async ({ page }) => {
+    await page.goto("/");
+    const tab = page.locator(".set-tab[role='tab']").first();
+    await tab.click({ button: "right" });
+
+    const menu = page.locator(".set-tab-context-menu");
+    await expect(menu).toBeVisible();
+    await expect(menu.getByText("複製")).toBeVisible();
+    await expect(menu.getByText("リネーム")).toBeVisible();
+  });
+
+  test("right-click duplicate creates a copy of the set", async ({ page }) => {
+    await page.goto("/");
+    const initialTabs = await page.locator(".set-tab[role='tab']").count();
+    const originalCells = await page.locator(".preview-cell").count();
+
+    // Right-click the first tab and duplicate
+    const tab = page.locator(".set-tab[role='tab']").first();
+    await tab.click({ button: "right" });
+    await page.locator(".set-tab-context-menu").getByText("複製").click();
+
+    // Should have one more tab
+    const newTabs = await page.locator(".set-tab[role='tab']").count();
+    expect(newTabs).toBe(initialTabs + 1);
+
+    // Duplicated set should have the same number of cells
+    const duplicatedCells = await page.locator(".preview-cell").count();
+    expect(duplicatedCells).toBe(originalCells);
+  });
+
+  test("right-click rename opens rename input", async ({ page }) => {
+    await page.goto("/");
+    const tab = page.locator(".set-tab[role='tab']").first();
+    await tab.click({ button: "right" });
+    await page.locator(".set-tab-context-menu").getByText("リネーム").click();
+
+    await expect(page.locator(".rename-input")).toBeVisible();
+  });
+
+  test("right-click delete removes the tab", async ({ page }) => {
+    await page.goto("/");
+
+    // Create a second set first
+    await page.locator(".add-tab").click();
+    const tabsAfterCreate = await page.locator(".set-tab[role='tab']").count();
+
+    // Right-click the first tab and delete
+    const tab = page.locator(".set-tab[role='tab']").first();
+    await tab.click({ button: "right" });
+    await page.locator(".set-tab-context-menu").getByText("削除").click();
+
+    const tabsAfterDelete = await page.locator(".set-tab[role='tab']").count();
+    expect(tabsAfterDelete).toBe(tabsAfterCreate - 1);
+  });
+
+  test("context menu closes on outside click", async ({ page }) => {
+    await page.goto("/");
+    const tab = page.locator(".set-tab[role='tab']").first();
+    await tab.click({ button: "right" });
+
+    await expect(page.locator(".set-tab-context-menu")).toBeVisible();
+
+    // Click outside to close
+    await page.locator("body").click();
+    await expect(page.locator(".set-tab-context-menu")).not.toBeVisible();
+  });
 });
 
 // ============================================================
@@ -289,8 +356,6 @@ test.describe("Journey: Editor panel", () => {
 
     // Editor panel heading should appear
     await expect(page.locator("h2", { hasText: "エディタ" })).toBeVisible();
-    // Column width slider should be visible
-    await expect(page.locator("#col-width")).toBeVisible();
   });
 });
 

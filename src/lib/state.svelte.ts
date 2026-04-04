@@ -135,7 +135,7 @@ export function renameSet(oldName: string, newName: string): boolean {
 export function duplicateSet(name: string): string {
   snapshot();
   const newName = generateName();
-  data.sets[newName] = structuredClone(data.sets[name]);
+  data.sets[newName] = $state.snapshot(data.sets[name]) as TagTable;
   data.activeSet = newName;
   return newName;
 }
@@ -205,11 +205,6 @@ export function moveColumn(from: number, to: number): void {
 export function updateColumnWidth(colIndex: number, width: number | undefined): void {
   snapshotCoalesced();
   getTable().columns[colIndex].width = width;
-}
-
-export function updateGlobalWidth(width: number): void {
-  snapshotCoalesced();
-  getTable().column_width = width;
 }
 
 // --- Cell mutations ---
